@@ -36,7 +36,7 @@ def run(context):
 
     if response.status_code == 200:
         result = response.json()['results'][0]['text']
-        print(prompt + result)
+        print(result)
 
 if __name__ == '__main__':
     prompt = sys.argv[1]

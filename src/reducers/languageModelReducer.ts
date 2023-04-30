@@ -1,12 +1,13 @@
-import { LanguageModelActionTypes, POST_MESSAGE, LOADING, ADD_MESSAGE } from '../actions/languageModelActions';
+import { LanguageModelActionTypes, LOADING, ADD_MESSAGE, EDIT_MESSAGE } from '../actions/languageModelActions';
+import { Message } from '../components/conversation/Conversation';
 
 export interface ConversationState {
-  messages: string[];
+  messages: Message[];
   loading: boolean;
 }
 
 const initialState = {
-  messages: [],
+  messages: [] as Message[],
   loading: false
 };
 
@@ -19,6 +20,18 @@ export default function languageModelReducer(state = initialState, action: Langu
         ...state,
         messages: [...state.messages, action.payload]
       };
+    case EDIT_MESSAGE:
+      const index = action.payload.index
+      const content = action.payload.content
+      const messages = state.messages
+      messages[index] = {
+        isUser: messages[index].isUser,
+        content: content
+      }
+      return {
+        ...state,
+        messages
+      }
     default:
       return state;
   }

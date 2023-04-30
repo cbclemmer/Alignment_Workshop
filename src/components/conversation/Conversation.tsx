@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import $ from 'jquery'
 import { useDispatch, useSelector } from 'react-redux';
-import { postMessage } from '../../actions/languageModelActions';
+import { postMessage, editMessage } from '../../actions/languageModelActions';
 
 export interface Message {
   content: string;
@@ -21,6 +22,13 @@ const Conversation: React.FC = () => {
     }
   };
 
+  const handleMessageChange = (e: React.FormEvent) => {
+    const index = $(e.target).data('index')
+    const text = $(e.target).text()
+    console.log(text)
+    dispatch(editMessage(index, text))
+  }
+
   return (
     <div>
       <h2 className="text-center mb-4">Conversation</h2>
@@ -28,7 +36,9 @@ const Conversation: React.FC = () => {
         {messages.map((message: Message, index: number) => (
           <p
             key={index}
+            data-index={index}
             className={`text-${message.isUser ? 'primary' : 'success'}`}
+            onInput={handleMessageChange}
             contentEditable={true}
           >
             {message.content}
@@ -53,55 +63,7 @@ const Conversation: React.FC = () => {
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default Conversation;
-
-// import React, { useState } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { RootState } from '../../reducers';
-// import { postMessage } from '../../actions/languageModelActions';
-
-// interface Message {
-//   content: string;
-//   isUser: boolean;
-// }
-
-// const Conversation: React.FC = () => {
-//   const [input, setInput] = useState('');
-//   const dispatch = useDispatch();
-//   const messages = useSelector((state: any) => state.conversation.messages);
-
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-//     if (input.trim()) {
-//       dispatch(postMessage(input) as any);
-//       setInput('');
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <h2>Conversation</h2>
-//       <div>
-//         {messages.map((message: Message, index: number) => (
-//           <p key={index} style={{ color: message.isUser ? 'blue' : 'green' }}>
-//             {message.content}
-//           </p>
-//         ))}
-//       </div>
-//       <form onSubmit={handleSubmit}>
-//         <input
-//           type="text"
-//           value={input}
-//           onChange={(e) => setInput(e.target.value)}
-//           placeholder="Type your message"
-//         />
-//         <button type="submit">Send</button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default Conversation;
+export default Conversation
