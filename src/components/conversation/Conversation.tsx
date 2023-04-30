@@ -34,15 +34,18 @@ const Conversation: React.FC = () => {
       <h2 className="text-center mb-4">Conversation</h2>
       <div className="mb-3">
         {messages.map((message: Message, index: number) => (
-          <p
-            key={index}
-            data-index={index}
-            className={`text-${message.isUser ? 'primary' : 'success'}`}
-            onInput={handleMessageChange}
-            contentEditable={true}
-          >
-            {message.content}
-          </p>
+          <div>
+            <b>{message.isUser ? 'User' : 'Assistant'}: </b><br></br>
+            <span
+              key={index}
+              data-index={index}
+              className={`text-${message.isUser ? 'primary' : 'success'}`}
+              onInput={handleMessageChange}
+              contentEditable={true}
+            >
+              {message.content}
+            </span>
+          </div>
         ))}
       </div>
       <div>

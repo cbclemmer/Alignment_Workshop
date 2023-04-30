@@ -11,7 +11,6 @@ app.use(express.json());
 
 app.post('/api/v1/generate', async (req: any, res: any) => {
   try {
-    console.log(req.body.prompt)
     const response = await callPythonScript(req.body.prompt);
     res.json(response.toString());
   } catch (error: any) {
