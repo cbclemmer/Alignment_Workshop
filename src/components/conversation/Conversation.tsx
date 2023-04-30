@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { postMessage } from '../../actions/languageModelActions';
 
-interface Message {
+export interface Message {
   content: string;
   isUser: boolean;
 }
@@ -26,7 +26,11 @@ const Conversation: React.FC = () => {
       <h2 className="text-center mb-4">Conversation</h2>
       <div className="mb-3">
         {messages.map((message: Message, index: number) => (
-          <p key={index} className={`text-${message.isUser ? 'primary' : 'success'}`}>
+          <p
+            key={index}
+            className={`text-${message.isUser ? 'primary' : 'success'}`}
+            contentEditable={true}
+          >
             {message.content}
           </p>
         ))}

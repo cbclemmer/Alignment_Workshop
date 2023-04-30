@@ -11,8 +11,8 @@ app.use(express.json());
 
 app.post('/api/v1/generate', async (req: any, res: any) => {
   try {
-    const API_URL = 'http://localhost:5000/api/v1/generate';
-    const response = await callPythonScript(req.body.message);
+    console.log(req.body.prompt)
+    const response = await callPythonScript(req.body.prompt);
     res.json(response.toString());
   } catch (error: any) {
     console.error('Error making request to language model API:', error);

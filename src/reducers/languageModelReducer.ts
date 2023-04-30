@@ -1,4 +1,4 @@
-import { LanguageModelActionTypes, POST_MESSAGE, LOADING } from '../actions/languageModelActions';
+import { LanguageModelActionTypes, POST_MESSAGE, LOADING, ADD_MESSAGE } from '../actions/languageModelActions';
 
 export interface ConversationState {
   messages: string[];
@@ -13,12 +13,11 @@ const initialState = {
 export default function languageModelReducer(state = initialState, action: LanguageModelActionTypes) {
   switch (action.type) {
     case LOADING:
-      return { ...state, loading: true };
-    case POST_MESSAGE:
+      return { ...state, loading: action.payload };
+    case ADD_MESSAGE:
       return {
         ...state,
-        messages: [...state.messages, { content: action.payload, isUser: false }],
-        loading: false
+        messages: [...state.messages, action.payload]
       };
     default:
       return state;

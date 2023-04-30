@@ -11,7 +11,7 @@ URI = f'http://{HOST}/api/v1/generate'
 def run(context):
     request = {
         'prompt': prompt,
-        'max_new_tokens': 250,
+        'max_new_tokens': 20,
         'do_sample': True,
         'temperature': 1.3,
         'top_p': 0.1,
