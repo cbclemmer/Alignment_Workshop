@@ -11,6 +11,7 @@ const Conversation: React.FC = () => {
   const [input, setInput] = useState('');
   const dispatch = useDispatch();
   const messages = useSelector((state: any) => state.conversation.messages);
+  const loading = useSelector((state: any) => state.conversation.loading);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +30,9 @@ const Conversation: React.FC = () => {
             {message.content}
           </p>
         ))}
+      </div>
+      <div>
+        {loading && <p className="text-info">Loading...</p>}
       </div>
       <form onSubmit={handleSubmit}>
         <div className="input-group mb-3">
