@@ -1,17 +1,27 @@
-import { LanguageModelActionTypes, LOADING, ADD_MESSAGE, EDIT_MESSAGE } from '../actions/languageModelActions';
-import { Message } from '../components/conversation/Conversation';
+import { 
+  LanguageModelActionTypes, 
+  LOADING, 
+  ADD_MESSAGE, 
+  EDIT_MESSAGE, 
+  EDIT_CONVERSATION_DATA
+} from '../actions/languageModelActions';
+import { 
+  ConversationState, 
+  Message,
+  ConversationDataProperty
+} from '../types';
 
-export interface ConversationState {
-  messages: Message[];
-  loading: boolean;
-}
-
-const initialState = {
+const initialState: ConversationState = {
   messages: [] as Message[],
-  loading: false
+  loading: false,
+  data: {
+    systemMessage: '',
+    userNotation: '###Human:',
+    assistantNotation: '###Assistant:'
+  }
 };
 
-export default function languageModelReducer(state = initialState, action: LanguageModelActionTypes) {
+export default function languageModelReducer(state = initialState, action: LanguageModelActionTypes): ConversationState {
   switch (action.type) {
     case LOADING:
       return { ...state, loading: action.payload };
@@ -31,6 +41,13 @@ export default function languageModelReducer(state = initialState, action: Langu
       return {
         ...state,
         messages
+      }
+    case EDIT_CONVERSATION_DATA:
+      let conversationData = state.data
+      conversationData[action.payload.type as ConversationDataProperty] = action.payload.content
+      return {
+        ...state,
+        data: conversationData
       }
     default:
       return state;
