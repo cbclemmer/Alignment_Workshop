@@ -2,6 +2,12 @@ const { spawn } = require('child_process')
 const express = require('express')
 const cors = require('cors')
 const axios = require('axios')
+const sqlite = require('sqlite3')
+
+const db = new sqlite.Database('data.db')
+
+db.run('CREATE TABLE IF NOT EXISTS models (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, systemMessage TEXT, userNotation TEXT, assistantNotation TEXT)');
+
 
 const app = express();
 const PORT = process.env.PORT || 4000;

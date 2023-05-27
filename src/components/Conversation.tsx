@@ -3,11 +3,11 @@ import $ from 'jquery'
 import { useDispatch, useSelector } from 'react-redux';
 import { 
   postMessage, 
-  editMessage, 
-  editConversationData 
-} from '../../actions/languageModelActions';
+  editMessage
+} from '../actions/conversationActions';
+import ModelSelector from './ModelSelector';
 
-import { ConversationDataProperty, Message } from '../../types';
+import { Message, LanguageModelData } from '../types';
 
 const Conversation: React.FC = () => {
   const [input, setInput] = useState('');
@@ -29,51 +29,10 @@ const Conversation: React.FC = () => {
     dispatch(editMessage(index, text))
   }
 
-  const handleConversationDataChange = (e: any) => {
-    const type = $(e.target).data('type')
-    const text = e.target.value
-    dispatch(editConversationData(text, type))
-  }
-
   return (
     <div>
       <h2 className="text-center mb-4">Conversation</h2>
-      <div className='mb-3'>
-        <h4>
-          System Message
-        </h4>
-        <textarea
-          className='form-control'
-          data-type={ConversationDataProperty.System}
-          onInput={handleConversationDataChange}
-        ></textarea>
-      </div>
-      <div className='input-group mb-3'>
-        <div className='input-group-prepend'>
-          <span className='input-group-text'>
-            User Notation
-          </span>
-        </div>
-        <input
-          type='text'
-          className='form-control'
-          data-type={ConversationDataProperty.User}
-          onChange={handleConversationDataChange}
-        />
-      </div>
-      <div className='input-group mb-3'>
-        <div className='input-group-prepend'>
-          <span className='input-group-text'>
-            Assistant Notation
-          </span>
-        </div>
-        <input
-          type='text'
-          className='form-control'
-          data-type={ConversationDataProperty.Assistant}
-          onChange={handleConversationDataChange}
-        />
-      </div>
+      <ModelSelector />
       <div className="mb-3">
         {messages.map((message: Message, index: number) => (
           <div>

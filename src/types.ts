@@ -9,12 +9,16 @@ export interface Message {
     isUser: boolean;
 }
 
+export interface LanguageModelData {
+    name: string
+    systemMessage: string,
+    userNotation: string,
+    assistantNotation: string
+}
+
 export interface ConversationState {
     messages: Message[];
     loading: boolean;
-    data: {
-        systemMessage: string,
-        userNotation: string,
-        assistantNotation: string
-    }
+    loadingModels: boolean
+    data: LanguageModelData
   }

@@ -3,8 +3,9 @@ import {
   LOADING, 
   ADD_MESSAGE, 
   EDIT_MESSAGE, 
-  EDIT_CONVERSATION_DATA
-} from '../actions/languageModelActions';
+  EDIT_CONVERSATION_DATA,
+  LOADING_MODELS
+} from '../actions/conversationActions';
 import { 
   ConversationState, 
   Message,
@@ -14,7 +15,9 @@ import {
 const initialState: ConversationState = {
   messages: [] as Message[],
   loading: false,
+  loadingModels: true,
   data: {
+    name: '',
     systemMessage: '',
     userNotation: '###Human:',
     assistantNotation: '###Assistant:'
@@ -24,7 +27,9 @@ const initialState: ConversationState = {
 export default function languageModelReducer(state = initialState, action: LanguageModelActionTypes): ConversationState {
   switch (action.type) {
     case LOADING:
-      return { ...state, loading: action.payload };
+      return { ...state, loading: action.payload }
+    case LOADING_MODELS:
+      return { ...state, loadingModels: action.payload }
     case ADD_MESSAGE:
       return {
         ...state,
