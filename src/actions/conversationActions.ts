@@ -1,68 +1,35 @@
-import { ThunkAction } from 'redux-thunk';
-import { RootState } from '../reducers';
-import { Message, ConversationDataProperty, ConversationState } from '../types'
+import { Message, ConversationState, Action, ActionList } from '../types'
+import { createAction } from '../util'
 import axios from 'axios';
 
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, LanguageModelActionTypes>;
 
-export const LOADING = 'LOADING';
-export const LOADING_MODELS = 'LOADING_MODELS';
-export const POST_MESSAGE = 'POST_MESSAGE';
-export const ADD_MESSAGE = 'ADD_MESSAGE';
+export const LOADING = 'LOADING'
+export const POST_MESSAGE = 'POST_MESSAGE'
+export const ADD_MESSAGE = 'ADD_MESSAGE'
 export const EDIT_MESSAGE = 'EDIT_MESSAGE'
 export const EDIT_CONVERSATION_DATA = 'EDIT_SYSTEM'
 
-export interface AddMessageAction {
-  type: typeof ADD_MESSAGE;
-  payload: Message;
-}
-
-export interface LoadingAction {
-  type: typeof LOADING,
-  payload: boolean
-}
-
-export interface LoadingModelsAction {
-  type: typeof LOADING_MODELS,
-  payload: boolean
-}
-
-export interface EditMessageAction {
-  type: typeof EDIT_MESSAGE,
-  payload: {
+export interface ConversationActions extends ActionList {
+  LOADING: Action<typeof LOADING, boolean>,
+  ADD_MESSAGE: Action<typeof ADD_MESSAGE, Message>,
+  EDIT_MESSAGE: Action<typeof EDIT_MESSAGE, {
     index: number,
     content: string
-  }
+  }>
 }
 
-export interface EditConversationData {
-  type: typeof EDIT_CONVERSATION_DATA,
-  payload: {
-    type: ConversationDataProperty,
-    content: string
-  }
+function runAction<K extends keyof ConversationActions>(dispatch: any, type: K, payload: ConversationActions[K]['payload']): Action<K, ConversationActions[K]['payload']> {
+  return dispatch(createAction<ConversationActions, K>(type, payload))
 }
 
-export type LanguageModelActionTypes = AddMessageAction | LoadingAction | EditMessageAction | EditConversationData | LoadingModelsAction
-
-export const loading = (isLoading: boolean): LoadingAction => {
-  return {
-    type: LOADING,
-    payload: isLoading
-  };
-};
-
-export const addMessage = (message: string, isUser: boolean): AddMessageAction => {
-  return {
-    type: ADD_MESSAGE,
-    payload: { 
-      content: message, 
-      isUser 
-    } as Message
-  }
+const addMessage = (dispatch: any, message: string, isUser: boolean): ConversationActions[typeof ADD_MESSAGE] => {
+  return runAction(dispatch, ADD_MESSAGE, { 
+    content: message, 
+    isUser 
+  })
 }
 
-export const editMessage = (index: number, content: string): EditMessageAction => {
+export const editMessage = (index: number, content: string): ConversationActions[typeof EDIT_MESSAGE] => {
   return {
     type: EDIT_MESSAGE,
     payload: {
@@ -72,17 +39,10 @@ export const editMessage = (index: number, content: string): EditMessageAction =
   }
 }
 
-export const loadingModels = (isLoading: boolean): LoadingModelsAction => {
-  return {
-    type: LOADING_MODELS,
-    payload: isLoading
-  }
-}
-
-export const postMessage = (message: string): AppThunk => async (dispatch: any, getState: any) => {
+export const postMessage = (message: string) => async (dispatch: any, getState: any) => {
   try {
-    dispatch(loading(true))
-    dispatch(addMessage(message, true))
+    runAction(dispatch, LOADING, false)
+    addMessage(dispatch, message, true)
     
     const state: ConversationState = getState().conversation
     console.log(state)
@@ -95,14 +55,14 @@ export const postMessage = (message: string): AppThunk => async (dispatch: any, 
     
     const response = await axios.post('http://localhost:4000/api/v1/generate', { prompt })
 
-    dispatch(addMessage(response.data, false))
-    dispatch(loading(false))
+    addMessage(dispatch, response.data, false)
+    runAction(dispatch, LOADING, false)
   } catch (error) {
     console.error('Error posting message:', error);
   }
 }
 
-export const getModels = async (dispatch: any, getState: any) => {
-    dispatch(loadingModels(true))
+// export const getModels = async (dispatch: any, getState: any) => {
+//     dispatch(loadingModels(true))
 
-}
+// }

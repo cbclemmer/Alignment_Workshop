@@ -1,21 +1,20 @@
 import { 
-  LanguageModelActionTypes, 
   LOADING, 
   ADD_MESSAGE, 
   EDIT_MESSAGE, 
   EDIT_CONVERSATION_DATA,
-  LOADING_MODELS
+  ConversationActions
 } from '../actions/conversationActions';
 import { 
   ConversationState, 
   Message,
-  ConversationDataProperty
+  ConversationDataProperty,
+  Action
 } from '../types';
 
 const initialState: ConversationState = {
   messages: [] as Message[],
   loading: false,
-  loadingModels: true,
   data: {
     name: '',
     systemMessage: '',
@@ -24,12 +23,10 @@ const initialState: ConversationState = {
   }
 };
 
-export default function languageModelReducer(state = initialState, action: LanguageModelActionTypes): ConversationState {
+export default function languageModelReducer(state = initialState, action: Action<keyof ConversationActions, any>): ConversationState {
   switch (action.type) {
     case LOADING:
       return { ...state, loading: action.payload }
-    case LOADING_MODELS:
-      return { ...state, loadingModels: action.payload }
     case ADD_MESSAGE:
       return {
         ...state,
