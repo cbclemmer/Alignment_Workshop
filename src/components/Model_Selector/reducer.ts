@@ -1,9 +1,10 @@
-import { LOADING, COMPONENT, ModelSelectorActions, UPDATE_MODELS } from "./actions"
-import { Action, ModelSelectorState } from "../../types"
+import { LOADING, COMPONENT, ModelSelectorActions, UPDATE_MODELS, SET_MODEL } from "./actions"
+import { Action, ModelSelectorState } from "../../lib/types"
 
 const initialState: ModelSelectorState = {
     loading: true,
-    models: []
+    models: [],
+    currentModel: null
 }
 
 export default function modelSelectorReducer(state = initialState, action: Action<keyof ModelSelectorActions, typeof COMPONENT, any>): ModelSelectorState {
@@ -13,6 +14,8 @@ export default function modelSelectorReducer(state = initialState, action: Actio
             return { ...state, loading: action.payload }
         case UPDATE_MODELS:
             return { ...state, models: action.payload }
+        case SET_MODEL:
+            return { ...state, currentModel: action.payload }
         default:
             return state
     }   

@@ -10,9 +10,10 @@ export interface Message {
 }
 
 export interface LanguageModelData {
+  id: number
   name: string
-  systemMessage: string,
-  userNotation: string,
+  systemMessage: string
+  userNotation: string
   assistantNotation: string
 }
 
@@ -30,6 +31,7 @@ export interface ConversationState {
 export interface ModelSelectorState {
   loading: boolean
   models: LanguageModelData[]
+  currentModel: LanguageModelData | null
 }
 
 export interface Action<T, C, P> {

@@ -11,12 +11,13 @@ import {
   Message,
   ConversationDataProperty,
   Action
-} from '../../types';
+} from '../../lib/types';
 
 const initialState: ConversationState = {
   messages: [] as Message[],
   loading: false,
   data: {
+    id: 0,
     name: '',
     systemMessage: '',
     userNotation: '###Human:',

@@ -1,15 +1,28 @@
 import React, { useState } from "react"
+import { useDispatch } from "react-redux"
+import { useNavigate } from 'react-router-dom'
+import { createModel } from './actions'
+import { LanguageModelData } from "../../lib/types"
 
-const LanguageModel: React.FC = () => {
+const ModelEditor: React.FC = () => {
   const [nameInput, setNameInput] = useState('')
   const [systemMessageInput, setSystemMessageInput] = useState('')
   const [userNotationInput, setUserNotationInput] = useState('')
   const [assistantNotationInput, setAssistantNotationInput] = useState('')
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!nameInput.trim()) return
-    
+    const model: LanguageModelData = {
+      id: 0,
+      name: nameInput,
+      systemMessage: systemMessageInput,
+      userNotation: userNotationInput,
+      assistantNotation: assistantNotationInput
+    }
+    dispatch(createModel(navigate, model) as any)
   }
 
   return (
@@ -70,3 +83,5 @@ const LanguageModel: React.FC = () => {
     </form>
   )
 }
+
+export default ModelEditor

@@ -1,5 +1,5 @@
-import { Message, ConversationState, Action, ActionList } from '../../types'
-import { createAction } from '../../util'
+import { Message, ConversationState, Action, ActionList } from '../../lib/types'
+import { createAction } from '../../lib/util'
 import axios from 'axios';
 
 export const COMPONENT = 'CONVERSATION'

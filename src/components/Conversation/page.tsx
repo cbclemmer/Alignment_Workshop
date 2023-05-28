@@ -7,7 +7,7 @@ import {
 } from './actions';
 import ModelSelector from '../Model_Selector/page';
 
-import { Message } from '../../types';
+import { Message } from '../../lib/types'
 
 const Conversation: React.FC = () => {
   const [input, setInput] = useState('');
