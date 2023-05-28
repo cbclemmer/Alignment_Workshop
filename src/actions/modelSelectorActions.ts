@@ -1,10 +1,11 @@
 import { Action, ActionList } from "../types"
 
+export const COMPONENT = 'MODEL_SELECTOR'
+
 export const LOADING = 'LOADING'
-export const PAGE = 'MODEL_SELECTOR'
 
 export interface ModelSelectorActions extends ActionList {
-    LOADING: Action<typeof LOADING, typeof PAGE,  boolean>
+    LOADING: Action<typeof LOADING, typeof COMPONENT,  boolean>
 }
 
 export function getModels() {
