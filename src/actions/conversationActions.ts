@@ -2,6 +2,7 @@ import { Message, ConversationState, Action, ActionList } from '../types'
 import { createAction } from '../util'
 import axios from 'axios';
 
+export const COMPONENT = 'CONVERSATION'
 
 export const LOADING = 'LOADING'
 export const POST_MESSAGE = 'POST_MESSAGE'
@@ -10,15 +11,15 @@ export const EDIT_MESSAGE = 'EDIT_MESSAGE'
 export const EDIT_CONVERSATION_DATA = 'EDIT_SYSTEM'
 
 export interface ConversationActions extends ActionList {
-  LOADING: Action<typeof LOADING, boolean>,
-  ADD_MESSAGE: Action<typeof ADD_MESSAGE, Message>,
-  EDIT_MESSAGE: Action<typeof EDIT_MESSAGE, {
+  LOADING: Action<typeof LOADING, typeof COMPONENT, boolean>,
+  ADD_MESSAGE: Action<typeof ADD_MESSAGE, typeof COMPONENT, Message>,
+  EDIT_MESSAGE: Action<typeof EDIT_MESSAGE, typeof COMPONENT, {
     index: number,
     content: string
   }>
 }
 
-function runAction<K extends keyof ConversationActions>(dispatch: any, type: K, payload: ConversationActions[K]['payload']): Action<K, ConversationActions[K]['payload']> {
+function runAction<K extends keyof ConversationActions>(dispatch: any, type: K, payload: ConversationActions[K]['payload']): Action<K, typeof COMPONENT, ConversationActions[K]['payload']> {
   return dispatch(createAction<ConversationActions, K>(type, payload))
 }
 
@@ -31,7 +32,8 @@ const addMessage = (dispatch: any, message: string, isUser: boolean): Conversati
 
 export const editMessage = (index: number, content: string): ConversationActions[typeof EDIT_MESSAGE] => {
   return {
-    type: EDIT_MESSAGE,
+    action: EDIT_MESSAGE,
+    component: COMPONENT,
     payload: {
       index,
       content

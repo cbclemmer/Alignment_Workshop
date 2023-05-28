@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useDispatch, useSelector } from 'react-redux'
 import { 
   getModels
-} from '../actions/conversationActions'
+} from '../actions/modelSelectorActions'
 import { LanguageModelData } from "../types"
 
 const ModelSelector: React.FC = () => {

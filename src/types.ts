@@ -26,11 +26,12 @@ export interface ModelSelectorState {
   loading: boolean
 }
 
-export interface Action<T, P> {
-  type: T,
+export interface Action<T, C, P> {
+  action: T,
+  component: C,
   payload: P
 }
 
 export type ActionList = {
-  [K: string]: Action<string, any>
+  [K: string]: Action<string, string, any>
 }

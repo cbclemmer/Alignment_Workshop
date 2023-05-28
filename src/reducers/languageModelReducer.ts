@@ -1,5 +1,6 @@
 import { 
   LOADING, 
+  COMPONENT,
   ADD_MESSAGE, 
   EDIT_MESSAGE, 
   EDIT_CONVERSATION_DATA,
@@ -23,8 +24,9 @@ const initialState: ConversationState = {
   }
 };
 
-export default function languageModelReducer(state = initialState, action: Action<keyof ConversationActions, any>): ConversationState {
-  switch (action.type) {
+export default function languageModelReducer(state = initialState, action: Action<keyof ConversationActions, typeof COMPONENT, any>): ConversationState {
+  if (action.component != COMPONENT) return state
+  switch (action.action) {
     case LOADING:
       return { ...state, loading: action.payload }
     case ADD_MESSAGE:
