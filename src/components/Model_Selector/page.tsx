@@ -1,4 +1,4 @@
-import './style.css'
+import '../../style.css'
 import { find } from 'lodash'
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from 'react-redux'

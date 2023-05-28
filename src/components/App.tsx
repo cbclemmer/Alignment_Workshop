@@ -12,6 +12,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Conversation />} />
           <Route path="/model" element={<ModelEditor />} />
+          <Route path="/model/:id" element={<ModelEditor />} />
         </Routes>
       </Router>
     </div>
