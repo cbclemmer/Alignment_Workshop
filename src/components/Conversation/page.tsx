@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { 
   postMessage, 
   editMessage
-} from '../actions/conversationActions';
-import ModelSelector from './ModelSelector';
+} from './actions';
+import ModelSelector from '../Model_Selector/page';
 
-import { Message, LanguageModelData } from '../types';
+import { Message } from '../../types';
 
 const Conversation: React.FC = () => {
   const [input, setInput] = useState('');
@@ -26,7 +26,7 @@ const Conversation: React.FC = () => {
   const handleMessageChange = (e: React.FormEvent) => {
     const index = $(e.target).data('index')
     const text = $(e.target).text()
-    dispatch(editMessage(index, text))
+    dispatch(editMessage(index, text) as any)
   }
 
   return (

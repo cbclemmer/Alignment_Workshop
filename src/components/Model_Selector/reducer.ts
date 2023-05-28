@@ -1,5 +1,5 @@
-import { LOADING, COMPONENT, ModelSelectorActions } from "../actions/modelSelectorActions"
-import { Action, ModelSelectorState } from "../types"
+import { LOADING, COMPONENT, ModelSelectorActions } from "./actions"
+import { Action, ModelSelectorState } from "../../types"
 
 const initialState: ModelSelectorState = {
     loading: false

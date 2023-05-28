@@ -5,13 +5,13 @@ import {
   EDIT_MESSAGE, 
   EDIT_CONVERSATION_DATA,
   ConversationActions
-} from '../actions/conversationActions';
+} from './actions';
 import { 
   ConversationState, 
   Message,
   ConversationDataProperty,
   Action
-} from '../types';
+} from '../../types';
 
 const initialState: ConversationState = {
   messages: [] as Message[],

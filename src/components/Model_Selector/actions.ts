@@ -1,4 +1,4 @@
-import { Action, ActionList } from "../types"
+import { Action, ActionList } from "../../types"
 
 export const COMPONENT = 'MODEL_SELECTOR'
 

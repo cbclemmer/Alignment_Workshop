@@ -1,5 +1,5 @@
-import { Message, ConversationState, Action, ActionList } from '../types'
-import { createAction } from '../util'
+import { Message, ConversationState, Action, ActionList } from '../../types'
+import { createAction } from '../../util'
 import axios from 'axios';
 
 export const COMPONENT = 'CONVERSATION'
@@ -20,7 +20,7 @@ export interface ConversationActions extends ActionList {
 }
 
 function runAction<K extends keyof ConversationActions>(dispatch: any, type: K, payload: ConversationActions[K]['payload']): Action<K, typeof COMPONENT, ConversationActions[K]['payload']> {
-  return dispatch(createAction<ConversationActions, K>(type, payload))
+  return dispatch(createAction<ConversationActions, K>(type, COMPONENT, payload))
 }
 
 const addMessage = (dispatch: any, message: string, isUser: boolean): ConversationActions[typeof ADD_MESSAGE] => {

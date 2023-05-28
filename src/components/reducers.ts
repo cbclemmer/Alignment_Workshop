@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import languageModelReducer from './languageModelReducer';
+import languageModelReducer from './Conversation/reducer';
 
 const rootReducer = combineReducers({
     conversation: languageModelReducer,

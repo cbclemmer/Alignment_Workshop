@@ -2,8 +2,8 @@ import { useState } from "react"
 import { useDispatch, useSelector } from 'react-redux'
 import { 
   getModels
-} from '../actions/modelSelectorActions'
-import { LanguageModelData } from "../types"
+} from './actions'
+import { LanguageModelData } from "../../types"
 
 const ModelSelector: React.FC = () => {
   const [modelName, setModelName] = useState('model')
