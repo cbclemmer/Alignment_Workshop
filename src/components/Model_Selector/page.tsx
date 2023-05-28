@@ -33,41 +33,49 @@ const ModelSelector: React.FC = () => {
   }
 
   return (
-    <div className="input-group mb-3">
+    <div>
       <b className={loading ? '' : 'hide'}>
         Loading Models...
       </b>
       <div className={loading ? 'hide' : ''}>
-        <div className='input-group-prepend'>
-          <div className="dropdown">
-            <button 
-              className="btn btn-secondary dropdown-toggle" 
-              type="button" 
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >{modelName}</button>
-            <ul className="dropdown-menu">
-              {models.map((model: LanguageModelData) => (
-                <li 
-                  key={model.id} 
-                  className="dropdown-item" 
-                  data-id={model.id}
-                  onClick={selectModel}
-                >
-                  {model.name}
-                </li>
-              ))}
-            </ul>
+        <div className='row g-3'>
+          <div className='col-md'>
+            <div className='form-floating'>
+                <div className="dropdown">
+                  <button 
+                    className="btn btn-secondary dropdown-toggle" 
+                    type="button" 
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >{modelName}</button>
+                  <ul className="dropdown-menu">
+                    {models.map((model: LanguageModelData) => (
+                      <li 
+                        key={model.id} 
+                        className="dropdown-item" 
+                        data-id={model.id}
+                        onClick={selectModel}
+                      >
+                        {model.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+            </div>
+          </div>
+          <div className='col-md'>
+            <div className='form-floating'>
+              <Link to="/model">Add Model</Link> 
+            </div> 
+          </div>
+          <div className='col-md'>
+            <div className='form-floating'>
+              {currentModel != null && <Link to={"/model/" + currentModel.id}>Edit Model</Link>}
+            </div> 
           </div>
         </div>
       </div>
-      <div className='input-group mb-3'>
-        <Link to="/model">Add Model</Link> 
-      </div>
-      <div className='input-group mb-3'>
-        {currentModel != null && <Link to={"/model/" + currentModel.id}>Edit Model</Link>}
-      </div>
-  </div>
+    </div>
   )
 }
 
