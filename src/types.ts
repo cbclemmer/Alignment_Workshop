@@ -16,6 +16,11 @@ export interface LanguageModelData {
   assistantNotation: string
 }
 
+export type AppState = {
+  conversation: ConversationState,
+  modelSelector: ModelSelectorState
+}
+
 export interface ConversationState {
   messages: Message[]
   loading: boolean
@@ -24,10 +29,11 @@ export interface ConversationState {
 
 export interface ModelSelectorState {
   loading: boolean
+  models: LanguageModelData[]
 }
 
 export interface Action<T, C, P> {
-  action: T,
+  type: T,
   component: C,
   payload: P
 }

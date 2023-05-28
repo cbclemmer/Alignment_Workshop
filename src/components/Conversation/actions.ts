@@ -32,7 +32,7 @@ const addMessage = (dispatch: any, message: string, isUser: boolean): Conversati
 
 export const editMessage = (index: number, content: string): ConversationActions[typeof EDIT_MESSAGE] => {
   return {
-    action: EDIT_MESSAGE,
+    type: EDIT_MESSAGE,
     component: COMPONENT,
     payload: {
       index,
@@ -55,7 +55,7 @@ export const postMessage = (message: string) => async (dispatch: any, getState: 
     const prompt = state.data.systemMessage + '\n' + conversation.join('\n') + '\n' + state.data.assistantNotation
     console.log(prompt)
     
-    const response = await axios.post('http://localhost:4000/api/v1/generate', { prompt })
+    const response = await axios.post('http://localhost:4000/api/generate', { prompt })
 
     addMessage(dispatch, response.data, false)
     runAction(dispatch, LOADING, false)

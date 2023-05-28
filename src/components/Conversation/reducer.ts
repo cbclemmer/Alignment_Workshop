@@ -26,7 +26,7 @@ const initialState: ConversationState = {
 
 export default function languageModelReducer(state = initialState, action: Action<keyof ConversationActions, typeof COMPONENT, any>): ConversationState {
   if (action.component != COMPONENT) return state
-  switch (action.action) {
+  switch (action.type) {
     case LOADING:
       return { ...state, loading: action.payload }
     case ADD_MESSAGE:

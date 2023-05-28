@@ -15,7 +15,16 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
-app.post('/api/v1/generate', async (req: any, res: any) => {
+app.get('/api/models', async (req: any, res: any) => {
+  db.all('SELECT * FROM models', (err: any, rows: any) => {
+    if (err) {
+      console.error('ERROR: ' + err.message)
+    }
+    res.json(rows)
+  })
+})
+
+app.post('/api/generate', async (req: any, res: any) => {
   try {
     const response = await callPythonScript(req.body.prompt);
     res.json(response.toString());

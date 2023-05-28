@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React, { useState } from "react"
 
 const LanguageModel: React.FC = () => {
   const [nameInput, setNameInput] = useState('')
