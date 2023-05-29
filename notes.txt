@@ -6,3 +6,9 @@ Features:
     Can send conversation to be trained
     Keeps track of which conversations were already trained and what date and time
     Can take a statement and generate prompts and completions resulting in a fine tune file
+
+
+TODO:
+Show name, system message, user notation, and assistant notation when selecting model
+Allow model deletion
+Save conversations

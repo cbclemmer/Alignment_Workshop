@@ -63,6 +63,24 @@ app.post('/api/edit-model', async (req: any, res: any) => {
   })
 })
 
+app.post('/api/delete-model', async (req: any, res: any) => {
+  const model: Model = req.body
+  if (!model.id) {
+    const err = 'Error: No id supplied for editing model'
+    console.error(err)
+    res.json({ error: err })
+    return
+  }
+  await db.run('DELETE FROM models WHERE id = ?', [model.id], (err: any) => {
+    if (err) {
+      console.error('ERROR: ' + err.message)
+      res.json(false)
+      return
+    }
+    res.json(true)
+  })
+})
+
 app.get('/api/models/:id/', (req: any, res: any) => {
   const id = req.params.id
   if (!id) {

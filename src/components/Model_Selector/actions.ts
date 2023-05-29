@@ -1,6 +1,7 @@
-import { getApi } from "../../lib/api"
+import { reject } from "lodash"
+import { getApi, postApi } from "../../lib/api"
 import { createAction } from "../../lib/util"
-import { Action, ActionList, LanguageModelData } from "../../lib/types"
+import { Action, ActionList, AppState, LanguageModelData } from "../../lib/types"
 
 export const COMPONENT = 'MODEL_SELECTOR'
 
@@ -11,7 +12,7 @@ export const SET_MODEL = 'SET_MODEL'
 export interface ModelSelectorActions extends ActionList {
   LOADING: Action<typeof LOADING, typeof COMPONENT,  boolean>,
   UPDATE_MODELS: Action<typeof UPDATE_MODELS, typeof COMPONENT, LanguageModelData[]>
-  SET_MODEL: Action<typeof SET_MODEL, typeof COMPONENT, LanguageModelData>
+  SET_MODEL: Action<typeof SET_MODEL, typeof COMPONENT, LanguageModelData | null>
 }
 
 function runAction<K extends keyof ModelSelectorActions>(dispatch: any, type: K, payload: ModelSelectorActions[K]['payload']): Action<K, typeof COMPONENT, ModelSelectorActions[K]['payload']> {
@@ -28,6 +29,21 @@ export async function getModels(dispatch: any, getState: any) {
   }
 }
 
-export const setModel = (model: LanguageModelData) => (dispatch: any, getState: any) => {
+export const setModel = (model: LanguageModelData | null) => (dispatch: any, getState: any) => {
   runAction(dispatch, SET_MODEL, model)
+}
+
+export const deleteModel = (model: LanguageModelData) => async (dispatch: any, getState: any) => {
+  runAction(dispatch, LOADING, true)
+  try {
+    const res = await postApi('delete-model', model)
+    if (!!res.data.error) {
+      console.error(res.data.errror)
+    }
+    const state: AppState = getState()
+    const models = reject(state.modelSelector.models, (m: LanguageModelData) => m.id === model.id)
+    runAction(dispatch, UPDATE_MODELS, models)
+  } finally {
+    runAction(dispatch, LOADING, false)
+  }
 }

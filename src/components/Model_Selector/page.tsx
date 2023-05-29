@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom'
 import $ from 'jquery'
 import { 
   getModels,
-  setModel
+  setModel,
+  deleteModel
 } from './actions'
 import { LanguageModelData, AppState } from "../../lib/types"
 
@@ -32,13 +33,21 @@ const ModelSelector: React.FC = () => {
     dispatch(setModel(model) as any)
   }
 
+  const deleteModelUI = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (currentModel == null) return
+    dispatch(deleteModel(currentModel) as any)
+    setModelName('Select Model')
+    dispatch(setModel(null) as any)
+  }
+
   return (
     <div>
       <b className={loading ? '' : 'hide'}>
         Loading Models...
       </b>
       <div className={loading ? 'hide' : ''}>
-        <div className='row g-3'>
+        <div className='row g-4'>
           <div className='col-md'>
             <div className='form-floating'>
                 <div className="dropdown">
@@ -73,6 +82,11 @@ const ModelSelector: React.FC = () => {
               {currentModel != null && <Link to={"/model/" + currentModel.id}>Edit Model</Link>}
             </div> 
           </div>
+          {currentModel != null && <div className='col-md'>
+            <a href='#' className='form-floating' onClick={deleteModelUI}>
+              Delete Model
+            </a> 
+          </div>}
         </div>
       </div>
     </div>
