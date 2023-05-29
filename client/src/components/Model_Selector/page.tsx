@@ -50,7 +50,7 @@ const ModelSelector: React.FC = () => {
         <div className='row g-4'>
           <div className='col-md'>
             <div className='form-floating'>
-                <div className="dropdown">
+                {models.length > 0 && <div className="dropdown">
                   <button 
                     className="btn btn-secondary dropdown-toggle" 
                     type="button" 
@@ -69,7 +69,7 @@ const ModelSelector: React.FC = () => {
                       </li>
                     ))}
                   </ul>
-                </div>
+                </div>}
             </div>
           </div>
           <div className='col-md'>

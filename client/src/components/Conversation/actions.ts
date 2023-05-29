@@ -43,7 +43,7 @@ export const editMessage = (index: number, content: string): ConversationActions
 
 export const postMessage = (message: string) => async (dispatch: any, getState: any) => {
   try {
-    runAction(dispatch, LOADING, false)
+    runAction(dispatch, LOADING, true)
     addMessage(dispatch, message, true)
     
     const state: AppState = getState()
@@ -52,9 +52,7 @@ export const postMessage = (message: string) => async (dispatch: any, getState: 
     const conversation = state.conversation.messages.map((msg: Message) => {
       return (msg.isUser ? model.userNotation : model.assistantNotation) + msg.content
     })
-    console.log(conversation)
     const prompt = model.systemMessage + '\n' + conversation.join('\n') + '\n' + model.assistantNotation
-    console.log(prompt)
     
     const response = await axios.post('http://localhost:4000/api/generate', { prompt })
 
@@ -64,8 +62,3 @@ export const postMessage = (message: string) => async (dispatch: any, getState: 
     console.error('Error posting message:', error);
   }
 }
-
-// export const getModels = async (dispatch: any, getState: any) => {
-//     dispatch(loadingModels(true))
-
-// }

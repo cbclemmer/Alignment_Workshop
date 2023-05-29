@@ -9,6 +9,5 @@ Features:
 
 
 TODO:
-Show name, system message, user notation, and assistant notation when selecting model
-Allow model deletion
 Save conversations
+models -> tunes -> conversations -> tags/messages
