@@ -15,14 +15,7 @@ import {
 
 const initialState: ConversationState = {
   messages: [] as Message[],
-  loading: false,
-  data: {
-    id: 0,
-    name: '',
-    systemMessage: '',
-    userNotation: '###Human:',
-    assistantNotation: '###Assistant:'
-  }
+  loading: false
 };
 
 export default function languageModelReducer(state = initialState, action: Action<keyof ConversationActions, typeof COMPONENT, any>): ConversationState {
@@ -46,13 +39,6 @@ export default function languageModelReducer(state = initialState, action: Actio
       return {
         ...state,
         messages
-      }
-    case EDIT_CONVERSATION_DATA:
-      let conversationData = state.data
-      conversationData[action.payload.type as ConversationDataProperty] = action.payload.content
-      return {
-        ...state,
-        data: conversationData
       }
     default:
       return state;

@@ -43,10 +43,9 @@ const Conversation: React.FC = () => {
       </div>
       <div className="mb-3">
         {messages.map((message: Message, index: number) => (
-          <div>
-            <b>{message.isUser ? currentModel?.userNotation : currentModel?.assistantNotation}: </b><br></br>
+          <div key={index}>
+            <b>{message.isUser ? currentModel?.userNotation : currentModel?.assistantNotation}</b><br></br>
             <p
-              key={index}
               data-index={index}
               className={`alert alert-${message.isUser ? 'primary' : 'secondary'}`}
               onInput={handleMessageChange}

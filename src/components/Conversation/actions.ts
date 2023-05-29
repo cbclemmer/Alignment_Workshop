@@ -1,4 +1,4 @@
-import { Message, ConversationState, Action, ActionList } from '../../lib/types'
+import { Message, ConversationState, Action, ActionList, AppState } from '../../lib/types'
 import { createAction } from '../../lib/util'
 import axios from 'axios';
 
@@ -46,13 +46,14 @@ export const postMessage = (message: string) => async (dispatch: any, getState: 
     runAction(dispatch, LOADING, false)
     addMessage(dispatch, message, true)
     
-    const state: ConversationState = getState().conversation
-    console.log(state)
-    const conversation = state.messages.map((msg: Message) => {
-      return (msg.isUser ? state.data.userNotation : state.data.assistantNotation) + msg.content
+    const state: AppState = getState()
+    const model = state.modelSelector.currentModel
+    if (model == null) return
+    const conversation = state.conversation.messages.map((msg: Message) => {
+      return (msg.isUser ? model.userNotation : model.assistantNotation) + msg.content
     })
     console.log(conversation)
-    const prompt = state.data.systemMessage + '\n' + conversation.join('\n') + '\n' + state.data.assistantNotation
+    const prompt = model.systemMessage + '\n' + conversation.join('\n') + '\n' + model.assistantNotation
     console.log(prompt)
     
     const response = await axios.post('http://localhost:4000/api/generate', { prompt })

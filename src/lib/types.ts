@@ -25,7 +25,6 @@ export type AppState = {
 export interface ConversationState {
   messages: Message[]
   loading: boolean
-  data: LanguageModelData
 }
 
 export interface ModelSelectorState {
