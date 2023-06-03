@@ -5,8 +5,9 @@ import { callPythonScript } from "./util.js"
 import express from 'express'
 import cors from 'cors'
 import sqlite from 'sqlite3'
+import { DataModel } from "./lib/DataModel.js"
 import { DataModelApi } from "./lib/api.js"
-import { ModelFormat } from "./data_models/ModelFormat.js"
+import { IModelFormat, ModelFormatKeys } from "./types.js"
 
 const db: Database = new sqlite.Database('data.db')
 
@@ -45,7 +46,7 @@ app.use(express.json());
 
 new DataModelApi({
   urlName: 'model-format',
-  model: new ModelFormat(db)
+  model: new DataModel<IModelFormat>('model_formats', db, ModelFormatKeys)
 }, app, db)
 
 app.post('/api/generate', async (req: any, res: any) => {

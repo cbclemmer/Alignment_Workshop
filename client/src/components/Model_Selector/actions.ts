@@ -22,7 +22,7 @@ function runAction<K extends keyof ModelSelectorActions>(dispatch: any, type: K,
 export async function getModels(dispatch: any, getState: any) {
   runAction(dispatch, LOADING, true)
   try {
-    const res = await getApi('models')
+    const res = await getApi('model-format/list')
     runAction(dispatch, UPDATE_MODELS, res.data)
   } finally {
     runAction(dispatch, LOADING, false)
@@ -36,7 +36,7 @@ export const setModel = (model: LanguageModelData | null) => (dispatch: any, get
 export const deleteModel = (model: LanguageModelData) => async (dispatch: any, getState: any) => {
   runAction(dispatch, LOADING, true)
   try {
-    const res = await postApi('delete-model', model)
+    const res = await postApi('model-format/delete', model)
     if (!!res.data.error) {
       console.error(res.data.errror)
     }

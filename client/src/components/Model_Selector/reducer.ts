@@ -20,7 +20,9 @@ export default function modelSelectorReducer(state = initialState, action: Actio
             return { ...state, models: action.payload }
         case SET_MODEL:
             const model: LanguageModelData = action.payload
-            model.formattedSystemMessage = formatSystemMessage(model.systemMessage)
+            if (model != null) {
+                model.formattedSystemMessage = formatSystemMessage(model.systemMessage)
+            }
             return { ...state, currentModel: model }
         default:
             return state
