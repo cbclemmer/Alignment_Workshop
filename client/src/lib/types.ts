@@ -13,6 +13,7 @@ export interface LanguageModelData {
   id: number
   name: string
   systemMessage: string
+  formattedSystemMessage?: string
   userNotation: string
   assistantNotation: string
 }

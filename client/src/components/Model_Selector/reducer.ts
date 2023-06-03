@@ -1,10 +1,14 @@
 import { LOADING, COMPONENT, ModelSelectorActions, UPDATE_MODELS, SET_MODEL } from "./actions"
-import { Action, ModelSelectorState } from "../../lib/types"
+import { Action, LanguageModelData, ModelSelectorState } from "../../lib/types"
 
 const initialState: ModelSelectorState = {
     loading: true,
     models: [],
     currentModel: null
+}
+
+function formatSystemMessage(systemMessage: string) {
+    return systemMessage.split('\n').join('<br />')
 }
 
 export default function modelSelectorReducer(state = initialState, action: Action<keyof ModelSelectorActions, typeof COMPONENT, any>): ModelSelectorState {
@@ -15,7 +19,9 @@ export default function modelSelectorReducer(state = initialState, action: Actio
         case UPDATE_MODELS:
             return { ...state, models: action.payload }
         case SET_MODEL:
-            return { ...state, currentModel: action.payload }
+            const model: LanguageModelData = action.payload
+            model.formattedSystemMessage = formatSystemMessage(model.systemMessage)
+            return { ...state, currentModel: model }
         default:
             return state
     }   

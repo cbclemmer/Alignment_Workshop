@@ -37,8 +37,7 @@ const Conversation: React.FC = () => {
       <ModelSelector />
       <div className={currentModel == null ? 'hide' : ''}>
         <b>System Message:</b>
-        <p>
-          {currentModel?.systemMessage}
+        <p dangerouslySetInnerHTML={{ __html: currentModel?.formattedSystemMessage ?? '' }}>
         </p>
       </div>
       <div className="mb-3">
