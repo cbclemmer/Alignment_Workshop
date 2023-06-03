@@ -1,6 +1,21 @@
 import { Database } from "sqlite3";
 
-export default class DataModel {
+export interface BaseModel {
+  id: number
+}
+
+export type ExtendedDataModel<I> = DataModel & DataModelAbstract<I>
+
+export abstract class DataModelAbstract<I> {
+  abstract instantiate(data: I): ExtendedDataModel<I>
+  abstract get(id: number): Promise<ExtendedDataModel<I> | null>
+  abstract list(): Promise<ExtendedDataModel<I>[] | null>
+  abstract create(data: I): Promise<ExtendedDataModel<I> | null>
+  abstract update(): Promise<boolean>
+  abstract delete(): Promise<boolean>
+}
+
+export class DataModel {
   public id: number
   protected db: Database
 

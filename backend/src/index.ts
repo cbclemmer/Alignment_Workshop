@@ -5,12 +5,13 @@ import { callPythonScript } from "./util.js"
 import express from 'express'
 import cors from 'cors'
 import sqlite from 'sqlite3'
-import modelApi from './api/models.js'
+import { DataModelApi } from "./lib/api.js"
+import { ModelFormat } from "./data_models/ModelFormat.js"
 
 const db: Database = new sqlite.Database('data.db')
 
 db.run("\
-CREATE TABLE IF NOT EXISTS models (\
+CREATE TABLE IF NOT EXISTS model_formats (\
   id INTEGER PRIMARY KEY AUTOINCREMENT, \
   name TEXT, \
   systemMessage TEXT, \
@@ -42,7 +43,10 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
-modelApi(app, db)
+new DataModelApi({
+  urlName: 'model-format',
+  model: new ModelFormat(db)
+}, app, db)
 
 app.post('/api/generate', async (req: any, res: any) => {
   try {
