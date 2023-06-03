@@ -38,6 +38,7 @@ export type AppState = {
   conversation: ConversationState,
   modelSelector: ModelSelectorState,
   tuneList: ListState<Tune>
+  conversationList: ListState<Conversation>
 }
 
 export interface ConversationState {

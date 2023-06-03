@@ -7,7 +7,7 @@ const rootReducer = combineReducers({
     conversation: languageModelReducer,
     modelSelector: modelSelectorReducer,
     tuneList: createCollectionReducer('TUNE_LIST'),
-    tuneShow: createCollectionReducer('TUNE_SHOW')
+    conversationList: createCollectionReducer('CONV_LIST')
 });
 
 export default rootReducer;

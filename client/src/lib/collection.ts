@@ -31,7 +31,7 @@ export class Collection<DT, C extends string> {
     return postApi(`${this.api_midpoint}/${endpoint}`, data)
   }
 
-  public async getList(){
+  public async getList() {
     this.runAction(LOADING, true)
     try {
       const res = await this.get('list')

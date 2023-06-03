@@ -1,66 +1,67 @@
-import { useSelector } from 'react-redux'
-import $ from 'jquery'
-import { AppState, Tune } from '../../../lib/types'
+import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { createConversation, getConversations, deleteTune, editTune } from './actions'
-import React from 'react';
+
 import { find } from 'lodash'
+import $ from 'jquery'
+
+import { AppState, Conversation, Tune } from '../../../lib/types'
+import { Collection } from '../../../lib/collection'
 
 export default () => {
-  const [tuneName, setTuneName] = useState('')
-  const [editTuneId, setEditTuneId] = useState(0)
-  const [editTuneState, setEditTuneState] = useState(false)
+  const [convName, setConvName] = useState('')
+  const [editConvId, setEditConvId] = useState(0)
+  const [editConvState, setEditConvState] = useState(false)
   
-  const tunes = useSelector((state: AppState) => state.tuneList.tunes)
-  const loading = useSelector((state: AppState) => state.tuneList.loading)
+  const conversations = useSelector((state: AppState) => state.conversationList.items)
+  const loading = useSelector((state: AppState) => state.conversationList.loading)
 
   const dispatch = useDispatch()
+  const collection = new Collection<Conversation, 'CONV_LIST'>('CONV_LIST', 'conversation', dispatch)
   useEffect(() => {
-    dispatch(getConversations as any)
+    collection.getList()
   }, [])
 
-  const deleteTuneUI = (e: React.FormEvent) => {
+  const deleteConvUI = (e: React.FormEvent) => {
     e.preventDefault()
     const id = $(e.target).data('id')
-    const tune = find(tunes, (t: Tune) => t.id.toString() == id)
-    if (!tune) {
+    const conv = find(conversations, (t: Conversation) => t.id.toString() == id)
+    if (!conv) {
       console.error('Could not find tune with id: ' + id)
       return
     }
-    dispatch(deleteTune(tune) as any)
+    collection.remove(conv)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!tuneName.trim()) return
-    const tune = { id: editTuneId, name: tuneName }
-    !!tune.id ? editTune(dispatch, tune) : createConversation(dispatch, tune)
-    setEditTuneState(false)
-    setEditTuneId(0)
-    setTuneName('')
+    if (!convName.trim()) return
+    const conv = { id: editConvId, name: convName }
+    !!conv.id ? collection.edit(conv) : collection.create(conv)
+    setEditConvState(false)
+    setEditConvId(0)
+    setConvName('')
   }
 
   const initEdit = (e: React.FormEvent) => {
     e.preventDefault()
     const id = $(e.target).data('id')
-    const tune = find(tunes, (t: Tune) => t.id.toString() == id)
+    const tune = find(conversations, (t: Tune) => t.id.toString() == id)
     if (!tune) {
       console.error('Could not find tune with id: ' + id)
       return
     }
 
-    setEditTuneState(true)
-    setTuneName(tune.name)
-    setEditTuneId(tune.id)
+    setEditConvState(true)
+    setConvName(tune.name)
+    setEditConvId(tune.id)
   }
 
   const stopEditing = (e: React.FormEvent) => {
     e.preventDefault()
-    setEditTuneId(0)
-    setEditTuneState(false)
-    setTuneName('')
+    setEditConvId(0)
+    setEditConvState(false)
+    setConvName('')
   }
 
   return (
@@ -72,21 +73,21 @@ export default () => {
           <div className='input-group mb-3'>
               <div className='input-group-prepend'>
               <span className='input-group-text'>
-                  {editTuneState ? 'Edit' : 'New'} Tune Name
+                  {editConvState ? 'Edit' : 'New'} Tune Name
               </span>
               </div>
               <input
               type='text'
               className='form-control'
-              value={tuneName}
-              onChange={(e) => setTuneName(e.target.value)}
+              value={convName}
+              onChange={(e) => setConvName(e.target.value)}
               />
           </div>
           <button className="btn btn-primary" type="submit">
-            {editTuneState ? 'Edit' : 'Create' }
+            {editConvState ? 'Edit' : 'Create' }
           </button>
         </form>
-        {editTuneState && <a 
+        {editConvState && <a 
           href='#'
           className='form-floating'
           onClick={stopEditing}
@@ -95,8 +96,8 @@ export default () => {
         </a>}
       </div>
       <div style={ { marginTop: '15px' } }>
-        <h2>Conversations for {}</h2>
-        {tunes.map((tune: Tune, index: number) => (
+        <h2>Tunes</h2>
+        {conversations.map((tune: Tune, index: number) => (
           <div key={index}>
             <Link to={`/tunes/show/${tune.id}`}>{tune.name}</Link>
             <button 
@@ -104,7 +105,7 @@ export default () => {
               data-id={tune.id}
               className='btn btn-outline-danger' 
               style={ { marginLeft: '20px' }}
-              onClick={deleteTuneUI}
+              onClick={deleteConvUI}
             >
               X
             </button>
