@@ -39,6 +39,7 @@ export const deleteModel = (model: LanguageModelData) => async (dispatch: any, g
     const res = await postApi('model-format/delete', model)
     if (!!res.data.error) {
       console.error(res.data.errror)
+      return
     }
     const state: AppState = getState()
     const models = reject(state.modelSelector.models, (m: LanguageModelData) => m.id === model.id)

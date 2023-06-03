@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import React from 'react';
 import Conversation from './Conversation/page'
 import ModelEditor from './Model_Editor/page'
+import TuneList from './Tunes/list/page'
 
 const App: React.FC = () => {
   return (
@@ -10,9 +11,11 @@ const App: React.FC = () => {
 
       <Router>
         <Routes>
-          <Route path="/" element={<Conversation />} />
+          {/* <Route path="/" element={<Conversation />} />
           <Route path="/model" element={<ModelEditor />} />
-          <Route path="/model/:id" element={<ModelEditor />} />
+          <Route path="/model/:id" element={<ModelEditor />} /> */}
+          
+          <Route path="/" element={<TuneList />} />
         </Routes>
       </Router>
     </div>

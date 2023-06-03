@@ -7,7 +7,7 @@ import cors from 'cors'
 import sqlite from 'sqlite3'
 import { DataModel } from "./lib/DataModel.js"
 import { DataModelApi } from "./lib/api.js"
-import { IModelFormat, ModelFormatKeys } from "./types.js"
+import { IMessage, IModelFormat, ITag, ITune, MessageKeys, ModelFormatKeys, TagKeys, TuneKeys } from "./types.js"
 
 const db: Database = new sqlite.Database('data.db')
 
@@ -18,25 +18,37 @@ CREATE TABLE IF NOT EXISTS model_formats (\
   systemMessage TEXT, \
   userNotation TEXT, \
   assistantNotation TEXT\
-);\
+);");
+
+db.run("\
 CREATE TABLE IF NOT EXISTS tunes (\
   id INTEGER PRIMARY KEY AUTOINCREMENT, \
-  FOREIGN KEY (model_id) REFERENCES models(id) \
   name TEXT\
-);\
+);");
+
+db.run("\
 CREATE TABLE IF NOT EXISTS conversations (\
   id INTEGER PRIMARY KEY AUTOINCREMENT, \
+  tune_id INTEGER,\
   FOREIGN KEY (tune_id) REFERENCES tunes(id) \
-);\
+);");
+
+db.run("\
 CREATE TABLE IF NOT EXISTS tags (\
   id INTEGER PRIMARY KEY AUTOINCREMENT, \
+  conversation_id INTEGER,\
+  text_data TEXT,\
   FOREIGN KEY (conversation_id) REFERENCES conversations(id) \
-);\
+);");
+
+db.run("\
 CREATE TABLE IF NOT EXISTS messages (\
   id INTEGER PRIMARY KEY AUTOINCREMENT, \
+  conversation_id INTEGER,\
+  text_data TEXT,\
+  isUser INTEGER,\
   FOREIGN KEY (conversation_id) REFERENCES conversations(id) \
-);\
-");
+);");
 
 const app: Application = express();
 const PORT = process.env.PORT || 4000;
@@ -47,6 +59,21 @@ app.use(express.json());
 new DataModelApi({
   urlName: 'model-format',
   model: new DataModel<IModelFormat>('model_formats', db, ModelFormatKeys)
+}, app, db)
+
+new DataModelApi({
+  urlName: 'tune',
+  model: new DataModel<ITune>('tunes', db, TuneKeys)
+}, app, db)
+
+new DataModelApi({
+  urlName: 'message',
+  model: new DataModel<IMessage>('messages', db, MessageKeys)
+}, app, db)
+
+new DataModelApi({
+  urlName: 'tag',
+  model: new DataModel<ITag>('tags', db, TagKeys)
 }, app, db)
 
 app.post('/api/generate', async (req: any, res: any) => {

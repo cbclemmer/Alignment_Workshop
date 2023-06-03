@@ -10,3 +10,24 @@ export interface IModelFormat extends BaseModel {
   userNotation: string
   assistantNotation: string
 }
+
+export const TuneKeys: (keyof ITune)[] = ['id', 'name']
+export interface ITune {
+  id: number
+  name: string
+}
+
+export const TagKeys: (keyof ITag)[] = ['id', 'text', 'conversation_id']
+export interface ITag {
+  id: number
+  conversation_id: number
+  text: string
+}
+
+export const MessageKeys: (keyof IMessage)[] = ['id', 'conversation_id', 'text', 'isUser']
+export interface IMessage {
+  id: number
+  conversation_id: number
+  text: string
+  isUser: number // 0: assistant, 1: user
+}

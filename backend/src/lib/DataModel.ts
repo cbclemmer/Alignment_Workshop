@@ -78,7 +78,7 @@ export class DataModel<I extends BaseModel> {
     try {
       const usedKeys = lo.reject(this.keyList, (k: string) => k == 'id')
       const keys = usedKeys.join(', ')
-      const values = lo.times(4, lo.constant('?')).join(', ')
+      const values = lo.times(usedKeys.length, lo.constant('?')).join(', ')
       const query = `INSERT INTO ${this.table} (${keys}) VALUES (${values})`
       console.log('Running create query')
       console.log(query)
