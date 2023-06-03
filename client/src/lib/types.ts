@@ -9,6 +9,12 @@ export interface Message {
   isUser: boolean;
 }
 
+export interface Conversation {
+  id: number
+  tune_id: number
+  name: string
+}
+
 export interface Tune {
   id: number
   name: string
@@ -23,10 +29,15 @@ export interface LanguageModelData {
   assistantNotation: string
 }
 
+export type ListState<DT> = {
+  loading: boolean
+  items: DT[]
+}
+
 export type AppState = {
   conversation: ConversationState,
   modelSelector: ModelSelectorState,
-  tuneList: TuneListState
+  tuneList: ListState<Tune>
 }
 
 export interface ConversationState {
@@ -38,11 +49,6 @@ export interface ModelSelectorState {
   loading: boolean
   models: LanguageModelData[]
   currentModel: LanguageModelData | null
-}
-
-export interface TuneListState {
-  loading: boolean
-  tunes: Tune[]
 }
 
 export interface Action<T, C, P> {

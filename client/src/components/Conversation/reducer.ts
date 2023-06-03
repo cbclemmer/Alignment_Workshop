@@ -3,13 +3,11 @@ import {
   COMPONENT,
   ADD_MESSAGE, 
   EDIT_MESSAGE, 
-  EDIT_CONVERSATION_DATA,
   ConversationActions
 } from './actions';
 import { 
   ConversationState, 
   Message,
-  ConversationDataProperty,
   Action
 } from '../../lib/types';
 

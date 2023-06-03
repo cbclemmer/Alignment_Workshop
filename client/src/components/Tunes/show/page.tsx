@@ -1,25 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
-
-import { find } from 'lodash'
+import { useSelector } from 'react-redux'
 import $ from 'jquery'
-
 import { AppState, Tune } from '../../../lib/types'
-import { Collection } from '../../../lib/collection'
+import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { createConversation, getConversations, deleteTune, editTune } from './actions'
+import React from 'react';
+import { find } from 'lodash'
 
 export default () => {
   const [tuneName, setTuneName] = useState('')
   const [editTuneId, setEditTuneId] = useState(0)
   const [editTuneState, setEditTuneState] = useState(false)
   
-  const tunes = useSelector((state: AppState) => state.tuneList.items)
+  const tunes = useSelector((state: AppState) => state.tuneList.tunes)
   const loading = useSelector((state: AppState) => state.tuneList.loading)
 
   const dispatch = useDispatch()
-  const collection = new Collection<Tune, 'TUNE_LIST'>('TUNE_LIST', 'tune', dispatch)
   useEffect(() => {
-    collection.getList()
+    dispatch(getConversations as any)
   }, [])
 
   const deleteTuneUI = (e: React.FormEvent) => {
@@ -30,14 +29,14 @@ export default () => {
       console.error('Could not find tune with id: ' + id)
       return
     }
-    collection.remove(tune)
+    dispatch(deleteTune(tune) as any)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!tuneName.trim()) return
     const tune = { id: editTuneId, name: tuneName }
-    !!tune.id ? collection.edit(tune) : collection.create(tune)
+    !!tune.id ? editTune(dispatch, tune) : createConversation(dispatch, tune)
     setEditTuneState(false)
     setEditTuneId(0)
     setTuneName('')
@@ -96,7 +95,7 @@ export default () => {
         </a>}
       </div>
       <div style={ { marginTop: '15px' } }>
-        <h2>Tunes</h2>
+        <h2>Conversations for {}</h2>
         {tunes.map((tune: Tune, index: number) => (
           <div key={index}>
             <Link to={`/tunes/show/${tune.id}`}>{tune.name}</Link>

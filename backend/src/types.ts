@@ -31,3 +31,10 @@ export interface IMessage {
   text: string
   isUser: number // 0: assistant, 1: user
 }
+
+export const ConversationKeys: (keyof IConversation)[] = ['id', 'tune_id', 'name']
+export interface IConversation {
+  id: number
+  tune_id: number
+  name: string
+}

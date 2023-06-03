@@ -7,7 +7,7 @@ import cors from 'cors'
 import sqlite from 'sqlite3'
 import { DataModel } from "./lib/DataModel.js"
 import { DataModelApi } from "./lib/api.js"
-import { IMessage, IModelFormat, ITag, ITune, MessageKeys, ModelFormatKeys, TagKeys, TuneKeys } from "./types.js"
+import { ConversationKeys, IConversation, IMessage, IModelFormat, ITag, ITune, MessageKeys, ModelFormatKeys, TagKeys, TuneKeys } from "./types.js"
 
 const db: Database = new sqlite.Database('data.db')
 
@@ -30,6 +30,7 @@ db.run("\
 CREATE TABLE IF NOT EXISTS conversations (\
   id INTEGER PRIMARY KEY AUTOINCREMENT, \
   tune_id INTEGER,\
+  name TEXT,\
   FOREIGN KEY (tune_id) REFERENCES tunes(id) \
 );");
 
@@ -69,6 +70,11 @@ new DataModelApi({
 new DataModelApi({
   urlName: 'message',
   model: new DataModel<IMessage>('messages', db, MessageKeys)
+}, app, db)
+
+new DataModelApi({
+  urlName: 'conversation',
+  model: new DataModel<IConversation>('conversations', db, ConversationKeys)
 }, app, db)
 
 new DataModelApi({
