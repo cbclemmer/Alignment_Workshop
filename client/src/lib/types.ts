@@ -5,8 +5,10 @@ export enum ConversationDataProperty {
 }
 
 export interface Message {
-  content: string;
-  isUser: boolean;
+  id: number
+  conversation_id: number
+  text_data: string
+  isUser: number // 1: user, 0: assistant
 }
 
 export interface Conversation {

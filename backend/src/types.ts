@@ -24,11 +24,11 @@ export interface ITag {
   text: string
 }
 
-export const MessageKeys: (keyof IMessage)[] = ['id', 'conversation_id', 'text', 'isUser']
+export const MessageKeys: (keyof IMessage)[] = ['id', 'conversation_id', 'text_data', 'isUser']
 export interface IMessage {
   id: number
   conversation_id: number
-  text: string
+  text_data: string
   isUser: number // 0: assistant, 1: user
 }
 

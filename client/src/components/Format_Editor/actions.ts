@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { getApi, postApi } from "../../lib/api"
-import { LanguageModelData } from "../../lib/types"
+import { Format } from "../../lib/types"
 
-export const createModel = async (navigate: any, data: LanguageModelData) => {
+export const createFormat = async (navigate: any, data: Format) => {
   const res = await postApi('model-format/create', data)
   if (!res) {
     console.error('ERROR: creating model failed')
@@ -11,7 +11,7 @@ export const createModel = async (navigate: any, data: LanguageModelData) => {
   navigate('/')
 }
 
-export const editModel = async (navigate: any, data: LanguageModelData) => {
+export const editFormat = async (navigate: any, data: Format) => {
   const res = await postApi('model-format/edit', data)
   if (!res) {
     console.error('ERROR: creating model failed')
@@ -20,11 +20,11 @@ export const editModel = async (navigate: any, data: LanguageModelData) => {
   navigate('/')
 }
 
-export const retrieveModel = async (id: number): Promise<LanguageModelData | null> => {
+export const retrieveFormat = async (id: number): Promise<Format | null> => {
   const res = await getApi(`model-format/get/${id}/`)
   if (res.data.error) {
     console.error('ERROR: ' + res.data.error)
     return null
   }
-  return res.data as LanguageModelData
+  return res.data as Format
 }

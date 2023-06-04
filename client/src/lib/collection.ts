@@ -7,7 +7,7 @@ const UPDATE = 'UPDATE'
 
 export interface ListActions<DT, C extends string> extends ActionList {
   LOADING: Action<typeof LOADING, C,  boolean>,
-  UPDATE_MODELS: Action<typeof UPDATE, C, DT[]>
+  UPDATE: Action<typeof UPDATE, C, DT[]>
 }
 
 function runAction<DT, C extends string, K extends keyof ListActions<DT, C>>(component: C, dispatch: any, type: K, payload: ListActions<DT, C>[K]['payload']): Action<K, C, ListActions<DT, C>[K]['payload']> {
@@ -16,8 +16,7 @@ function runAction<DT, C extends string, K extends keyof ListActions<DT, C>>(com
 
 export class Collection<DT, C extends string> {
   private api_midpoint: string
-  private getListParams: any
-  private runAction: <K extends keyof ListActions<DT, C>>(type: K, payload: ListActions<DT, C>[K]['payload']) => Action<K, C, ListActions<DT, C>[K]['payload']>
+  public runAction: <K extends keyof ListActions<DT, C>>(type: K, payload: ListActions<DT, C>[K]['payload']) => Action<K, C, ListActions<DT, C>[K]['payload']>
 
   constructor(component: C, api_midpoint: string, dispatch: any) {
     this.api_midpoint = api_midpoint
@@ -55,18 +54,27 @@ export class Collection<DT, C extends string> {
 
   public async create(data: DT) {
     this.runAction(LOADING, true)
-    const res = await this.post('create', data)
-    if (!res) {
-      console.error('ERROR: creating tune failed')
-      return
+    try {
+      const res = await this.post('create', data)
+      if (!res) {
+        console.error('ERROR: creating tune failed')
+        return
+      }
+    } finally {
+      this.runAction(LOADING, false)
     }
   }
 
   public async edit(data: DT) {
-    const res = await this.post('edit', data)
-    if (!res) {
-      console.error('ERROR: creating tune failed')
-      return
+    this.runAction(LOADING, true)
+    try {
+      const res = await this.post('edit', data)
+      if (!res) {
+        console.error('ERROR: creating tune failed')
+        return
+      }
+    } finally {
+      this.runAction(LOADING, false)
     }
   }
 
@@ -88,6 +96,7 @@ export const createCollectionReducer = <DT, C extends string, K extends keyof Li
   state: ListState<DT> = { loading: false, items: [] }, 
   action: Action<keyof ListActions<DT, C>, C, ListActions<DT, C>[K]['payload']>
 ): ListState<DT> => {
+  console.log(action)
   if (action.component != component) return state
   switch (action.type) {
       case LOADING:

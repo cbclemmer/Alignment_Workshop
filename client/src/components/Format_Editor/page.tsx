@@ -1,58 +1,63 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { useNavigate, useParams } from 'react-router-dom'
-import { createModel, editModel, retrieveModel } from './actions'
-import { LanguageModelData } from "../../lib/types"
+import { createFormat, editFormat, retrieveFormat } from './actions'
+import { Format } from "../../lib/types"
+import { Collection } from "../../lib/collection"
 
-const ModelEditor: React.FC = () => {
+export default () => {
   const { id } = useParams()
+  const numId = id === undefined ? NaN : parseInt(id)
+
   const [loading, setLoading] = useState(false)
   const [nameInput, setNameInput] = useState('')
   const [systemMessageInput, setSystemMessageInput] = useState('')
   const [userNotationInput, setUserNotationInput] = useState('')
   const [assistantNotationInput, setAssistantNotationInput] = useState('')
-  const dispatch = useDispatch()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const collection = new Collection<Format, 'FORMAT_EDITOR'>('FORMAT_EDITOR', 'format', dispatch)
 
   useEffect(() => {
     (async () => {
       if (!id || isNaN(parseInt(id))) return
       setLoading(true)
-      const model = await retrieveModel(parseInt(id))
+      const format = await retrieveFormat(parseInt(id))
       setLoading(false)
-      if (model == null) return
-      setNameInput(model.name)
-      setSystemMessageInput(model.systemMessage)
-      setUserNotationInput(model.userNotation)
-      setAssistantNotationInput(model.assistantNotation)
+      if (format == null) return
+      setNameInput(format.name)
+      setSystemMessageInput(format.systemMessage)
+      setUserNotationInput(format.userNotation)
+      setAssistantNotationInput(format.assistantNotation)
     })()
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!nameInput.trim()) return
-    const model: LanguageModelData = {
+    const format: Format = {
       id: !!id ? parseInt(id) : 0,
       name: nameInput,
       systemMessage: systemMessageInput,
       userNotation: userNotationInput,
       assistantNotation: assistantNotationInput
     }
-    !!id ? editModel(navigate, model) : createModel(navigate, model)
+    await (!!id ? collection.edit(format) : collection.create(format))
+    navigate('/')
   }
 
   return (
     <div>
       <b className={loading ? '' : 'hide'}>
-        Loading Models...
+        Loading Formats...
       </b>
       <div className={loading ? 'hide' : ''}>
         <form onSubmit={handleSubmit}>
-          <h2 className="text-center mb-4">Model</h2>
+          <h2 className="text-center mb-4">Format</h2>
           <div className='input-group mb-3'>
               <div className='input-group-prepend'>
               <span className='input-group-text'>
-                  Model Name
+                  Format Name
               </span>
               </div>
               <input
@@ -106,5 +111,3 @@ const ModelEditor: React.FC = () => {
     </div>
   )
 }
-
-export default ModelEditor

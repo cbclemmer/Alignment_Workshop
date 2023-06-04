@@ -4,6 +4,7 @@ import Conversation from './Conversation/page'
 import ModelEditor from './Format_Editor/page'
 import TuneList from './Tunes/list/page'
 import TuneShow from './Tunes/show/page'
+import FormatEditor from './Format_Editor/page'
 
 const App: React.FC = () => {
   return (
@@ -16,7 +17,8 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<TuneList />} />
           <Route path="/tunes/show/:id" element={<TuneShow />} />
-          <Route path="/conversations/:id" element={<Conversation />} />
+          <Route path="/conversations/show/:id" element={<Conversation />} />
+          <Route path="/formats/new" element={<FormatEditor />} />
         </Routes>
       </Router>
     </div>

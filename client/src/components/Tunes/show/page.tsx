@@ -105,7 +105,7 @@ export default () => {
         <h2>Conversations</h2>
         {conversations.map((tune: Tune, index: number) => (
           <div key={index}>
-            <Link to={`/tunes/show/${tune.id}`}>{tune.name}</Link>
+            <Link to={`/conversations/show/${tune.id}`}>{tune.name}</Link>
             <button 
               type='button'
               data-id={tune.id}

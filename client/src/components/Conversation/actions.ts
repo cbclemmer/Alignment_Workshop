@@ -1,4 +1,5 @@
-import { Message, ConversationState, Action, ActionList, AppState } from '../../lib/types'
+import { Collection } from '../../lib/collection';
+import { Message, Action, ActionList, AppState } from '../../lib/types'
 import { createAction } from '../../lib/util'
 import axios from 'axios';
 
@@ -23,13 +24,6 @@ function runAction<K extends keyof ConversationActions>(dispatch: any, type: K, 
   return dispatch(createAction<ConversationActions, K>(type, COMPONENT, payload))
 }
 
-const addMessage = (dispatch: any, message: string, isUser: boolean): ConversationActions[typeof ADD_MESSAGE] => {
-  return runAction(dispatch, ADD_MESSAGE, { 
-    content: message, 
-    isUser 
-  })
-}
-
 export const editMessage = (index: number, content: string): ConversationActions[typeof EDIT_MESSAGE] => {
   return {
     type: EDIT_MESSAGE,
@@ -41,23 +35,41 @@ export const editMessage = (index: number, content: string): ConversationActions
   }
 }
 
-export const postMessage = (message: string) => async (dispatch: any, getState: any) => {
+export const postMessage = (message: string, collection: Collection<Message, 'MESSAGE_LIST'>) => async (dispatch: any, getState: any) => {
   try {
-    runAction(dispatch, LOADING, true)
-    addMessage(dispatch, message, true)
+    // runAction(dispatch, LOADING, true)
     
     const state: AppState = getState()
-    const model = state.modelSelector.currentModel
-    if (model == null) return
-    const conversation = state.conversation.messages.map((msg: Message) => {
-      return (msg.isUser ? model.userNotation : model.assistantNotation) + msg.content
+    
+    const format = state.formatSelector.currentFormat
+    if (format == null) return
+    
+    const conversation = state.currentConversation.conversation
+    if (conversation == null) return
+    
+    const userMessage = { id: 0, conversation_id: conversation.id, text_data: message, isUser: 1 } as Message
+    const messages = state.messageList.items
+    messages.push(userMessage)
+
+    const messagesForPrompt = state.messageList.items.map((msg: Message) => {
+      return (msg.isUser ? format.userNotation : format.assistantNotation) + msg.text_data
     })
-    const prompt = model.systemMessage + '\n' + conversation.join('\n') + '\n' + model.assistantNotation
+    const prompt = format.systemMessage + '\n' + messagesForPrompt.join('\n') + '\n' + format.assistantNotation
     
     const response = await axios.post('http://localhost:4000/api/generate', { prompt })
+    if (response.status != 200) {
+      console.error('Error sending message: ' + response.data)
+      return
+    }
+    
+    await collection.create(userMessage)
 
-    addMessage(dispatch, response.data, false)
-    runAction(dispatch, LOADING, false)
+    const assistantMessage = { id: 0, conversation_id: conversation.id, text_data: response.data, isUser: 0 }
+    messages.push(assistantMessage)
+    collection.runAction('UPDATE', messages)
+
+    // runAction(dispatch, LOADING, false)
+    await collection.create(assistantMessage)
   } catch (error) {
     console.error('Error posting message:', error);
   }

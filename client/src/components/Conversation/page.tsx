@@ -23,8 +23,7 @@ export default () => {
   const loading = useSelector((state: AppState) => state.messageList.loading)
   const messages = useSelector((state: AppState) => state.messageList.items)
   const currentFormat = useSelector((state: AppState) => state.formatSelector.currentFormat)
-  const currentConversation = useSelector((state: AppState) => state.currentConversation.conversation)
-  const collection = new Collection<Conversation, 'MESSAGE_LIST'>('MESSAGE_LIST', 'message', dispatch)
+  const collection = new Collection<Message, 'MESSAGE_LIST'>('MESSAGE_LIST', 'message', dispatch)
 
   useEffect(() => {
     getConversation(dispatch, numId)
@@ -32,9 +31,10 @@ export default () => {
   }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
+    console.log('SUBMIT')
     e.preventDefault();
     if (input.trim()) {
-      dispatch(postMessage(input) as any);
+      dispatch(postMessage(input, collection) as any);
       setInput('');
     }
   }
@@ -54,6 +54,9 @@ export default () => {
         <p dangerouslySetInnerHTML={{ __html: currentFormat?.formattedSystemMessage ?? '' }}>
         </p>
       </div>
+      <div>
+        Length: {messages.length}
+      </div>
       <div className="mb-3">
         {messages.map((message: Message, index: number) => (
           <div key={index}>
@@ -64,7 +67,7 @@ export default () => {
               onInput={handleMessageChange}
               contentEditable={true}
             >
-              {message.content}
+              {message.text_data}
             </p>
           </div>
         ))}
@@ -72,7 +75,7 @@ export default () => {
       <div>
         {loading && <p className="text-info">Loading...</p>}
       </div>
-      <form onSubmit={handleSubmit} className={currentFormat == null ? 'hide' : ''}>
+      {!loading && <form onSubmit={handleSubmit} className={currentFormat == null ? 'hide' : ''}>
         <div className="input-group mb-3">
           <input
             type="text"
@@ -85,7 +88,7 @@ export default () => {
             Send
           </button>
         </div>
-      </form>
+      </form>}
     </div>
   )
 }
