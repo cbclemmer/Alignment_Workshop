@@ -9,6 +9,7 @@ const rootReducer = combineReducers({
     tuneList: createCollectionReducer('TUNE_LIST'),
     conversationList: createCollectionReducer('CONV_LIST'),
     messageList: createCollectionReducer('MESSAGE_LIST'),
+    tagList: createCollectionReducer('TAG_LIST'),
     currentTune: currentTuneReducer,
     currentConversation: currentConvReducer
 });

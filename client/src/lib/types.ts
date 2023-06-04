@@ -22,6 +22,12 @@ export interface Tune {
   name: string
 }
 
+export interface Tag {
+  id: number
+  name: string
+  conversation_id: number
+}
+
 export interface Format {
   id: number
   name: string
@@ -51,6 +57,7 @@ export type AppState = {
   tuneList: ListState<Tune>
   conversationList: ListState<Conversation>
   messageList: ListState<Message>
+  tagList: ListState<Tag>
   currentTune: CurrentTuneState
   currentConversation: CurrentConversationState
 }

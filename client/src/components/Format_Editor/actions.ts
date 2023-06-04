@@ -3,7 +3,7 @@ import { getApi, postApi } from "../../lib/api"
 import { Format } from "../../lib/types"
 
 export const createFormat = async (navigate: any, data: Format) => {
-  const res = await postApi('model-format/create', data)
+  const res = await postApi('format/create', data)
   if (!res) {
     console.error('ERROR: creating model failed')
     return
@@ -12,7 +12,7 @@ export const createFormat = async (navigate: any, data: Format) => {
 }
 
 export const editFormat = async (navigate: any, data: Format) => {
-  const res = await postApi('model-format/edit', data)
+  const res = await postApi('format/edit', data)
   if (!res) {
     console.error('ERROR: creating model failed')
     return

@@ -38,7 +38,7 @@ db.run("\
 CREATE TABLE IF NOT EXISTS tags (\
   id INTEGER PRIMARY KEY AUTOINCREMENT, \
   conversation_id INTEGER,\
-  text_data TEXT,\
+  name TEXT,\
   FOREIGN KEY (conversation_id) REFERENCES conversations(id) \
 );");
 

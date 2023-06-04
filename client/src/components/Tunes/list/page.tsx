@@ -22,7 +22,7 @@ export default () => {
     collection.getList()
   }, [])
 
-  const deleteTuneUI = (e: React.FormEvent) => {
+  const deleteTuneUI = async (e: React.FormEvent) => {
     e.preventDefault()
     const id = $(e.target).data('id')
     const tune = find(tunes, (t: Tune) => t.id.toString() == id)
@@ -30,17 +30,19 @@ export default () => {
       console.error('Could not find tune with id: ' + id)
       return
     }
-    collection.remove(tune)
+    await collection.remove(tune)
+    await collection.getList()
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!tuneName.trim()) return
     const tune = { id: editTuneId, name: tuneName }
-    !!tune.id ? collection.edit(tune) : collection.create(tune)
+    await (!!tune.id ? collection.edit(tune) : collection.create(tune))
     setEditTuneState(false)
     setEditTuneId(0)
     setTuneName('')
+    await collection.getList()
   }
 
   const initEdit = (e: React.FormEvent) => {

@@ -17,11 +17,11 @@ export interface ITune {
   name: string
 }
 
-export const TagKeys: (keyof ITag)[] = ['id', 'text', 'conversation_id']
+export const TagKeys: (keyof ITag)[] = ['id', 'name', 'conversation_id']
 export interface ITag {
   id: number
   conversation_id: number
-  text: string
+  name: string
 }
 
 export const MessageKeys: (keyof IMessage)[] = ['id', 'conversation_id', 'text_data', 'isUser']

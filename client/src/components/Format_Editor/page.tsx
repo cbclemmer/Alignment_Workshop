@@ -104,7 +104,7 @@ export default () => {
               />
           </div>
           <button className="btn btn-primary" type="submit">
-            Send
+            Submit
           </button>
         </form>
       </div>
