@@ -5,17 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { 
   postMessage, 
   editMessage,
-  addEmptyMessage
+  addEmptyMessage,
+  removeLastMessage
 } from './actions';
 import FormatSelector from '../Format_Selector/page';
 
-import { AppState, Conversation, Message } from '../../lib/types'
+import { AppState, Message } from '../../lib/types'
 import { Link, useParams } from 'react-router-dom';
 import { getConversation } from '../../actions/conversation';
 import { Collection } from '../../lib/collection';
 
-
-// TODO: delete message
 export default () => {
   const { id } = useParams()
   if (!id || isNaN(parseInt(id))) return (<div>Incorrect ID</div>)
@@ -48,6 +47,12 @@ export default () => {
     addEmptyMessage(collection, messages, conversation.id)
   }
 
+  const removeLastMessageUI = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (conversation == null) return
+    removeLastMessage(collection, messages, conversation.id)
+  }
+
   const handleMessageChange = (e: any) => {
     const index = $(e.target).data('index')
     const text = e.target.value
@@ -65,9 +70,6 @@ export default () => {
         <b>System Message:</b>
         <p dangerouslySetInnerHTML={{ __html: currentFormat?.formattedSystemMessage ?? '' }}>
         </p>
-      </div>
-      <div>
-        Length: {messages.length}
       </div>
       <div className="mb-3">
         {messages.map((message: Message, index: number) => (
@@ -103,11 +105,19 @@ export default () => {
             </button>
           </div>
         </form>
-        <button className='btn btn-primary' onClick={addEmptyMessageUI}>
-          Add Empty Message
-        </button>
-      </div>
-      }
+        <div className='btn-toolbar'>
+          <div className='btn-group mr-2'>
+            <button className='btn btn-primary' onClick={addEmptyMessageUI}>
+              Add Empty Message
+            </button>
+          </div>
+          {messages.length > 0 && <div className='btn-group mr-2' style={ { marginLeft: '15px' } }>
+            <button className='btn btn-danger' onClick={removeLastMessageUI}>
+              Remove Last Message
+            </button>
+          </div>}
+        </div>
+      </div>}
     </div>
   )
 }

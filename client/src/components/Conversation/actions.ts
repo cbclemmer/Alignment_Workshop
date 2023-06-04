@@ -98,3 +98,14 @@ export const addEmptyMessage = async (collection: Collection<Message, 'MESSAGE_L
     console.error('Error posting message:', error);
   }
 }
+
+export const removeLastMessage = async (collection: Collection<Message, 'MESSAGE_LIST'>, messages: Message[], convId: number) => {
+  try {
+    if (messages.length == 0) return
+    const lastMessage = messages[messages.length - 1]
+    await collection.remove(lastMessage)
+    collection.getList({ conversation_id: convId })
+  } catch (error) {
+    console.error('Error posting message:', error);
+  }
+}
