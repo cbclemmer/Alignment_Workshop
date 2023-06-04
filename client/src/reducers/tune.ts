@@ -15,7 +15,7 @@ const initialState: CurrentTuneState = {
   loading: false
 }
 
-export default function languageModelReducer(state = initialState, action: Action<keyof CurrentTuneActions, typeof COMPONENT, any>): CurrentTuneState {
+export default function (state = initialState, action: Action<keyof CurrentTuneActions, typeof COMPONENT, any>): CurrentTuneState {
   if (action.component != COMPONENT) return state
   switch (action.type) {
     case LOADING:

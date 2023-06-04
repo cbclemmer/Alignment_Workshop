@@ -16,6 +16,7 @@ function runAction<DT, C extends string, K extends keyof ListActions<DT, C>>(com
 
 export class Collection<DT, C extends string> {
   private api_midpoint: string
+  private getListParams: any
   private runAction: <K extends keyof ListActions<DT, C>>(type: K, payload: ListActions<DT, C>[K]['payload']) => Action<K, C, ListActions<DT, C>[K]['payload']>
 
   constructor(component: C, api_midpoint: string, dispatch: any) {
@@ -59,7 +60,6 @@ export class Collection<DT, C extends string> {
       console.error('ERROR: creating tune failed')
       return
     }
-    this.getList()
   }
 
   public async edit(data: DT) {
@@ -68,7 +68,6 @@ export class Collection<DT, C extends string> {
       console.error('ERROR: creating tune failed')
       return
     }
-    this.getList()
   }
 
   public async remove(model: DT) {
@@ -79,7 +78,6 @@ export class Collection<DT, C extends string> {
         console.error(res.data.errror)
         return
       }
-      this.getList()
     } finally {
       this.runAction(LOADING, false)
     }

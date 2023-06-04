@@ -39,17 +39,18 @@ export type CurrentTuneState = {
   loading: boolean
 }
 
+export type CurrentConversationState = {
+  conversation: Conversation | null,
+  loading: boolean
+}
+
 export type AppState = {
-  conversation: ConversationState,
   formatSelector: FormatSelectorState,
   tuneList: ListState<Tune>
   conversationList: ListState<Conversation>
+  messageList: ListState<Message>
   currentTune: CurrentTuneState
-}
-
-export interface ConversationState {
-  messages: Message[]
-  loading: boolean
+  currentConversation: CurrentConversationState
 }
 
 export interface FormatSelectorState {

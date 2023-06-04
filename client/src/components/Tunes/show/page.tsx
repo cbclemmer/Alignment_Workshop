@@ -5,7 +5,6 @@ import { Link, useParams } from 'react-router-dom'
 import { find } from 'lodash'
 import $ from 'jquery'
 
-import { getTune } from '../../../actions/tune'
 import { AppState, Conversation, Tune } from '../../../lib/types'
 import { Collection } from '../../../lib/collection'
 
@@ -20,16 +19,14 @@ export default () => {
   const conversations = useSelector((state: AppState) => state.conversationList.items)
   const loading = useSelector((state: AppState) => state.conversationList.loading)
   const tuneLoading = useSelector((state: AppState) => state.currentTune.loading)
-  const currentTune = useSelector((state: AppState) => state.currentTune.tune)
 
   const dispatch = useDispatch()
   const collection = new Collection<Conversation, 'CONV_LIST'>('CONV_LIST', 'conversation', dispatch)
   useEffect(() => {
-    getTune(dispatch, numId)
     collection.getList({ tune_id: numId })
   }, [])
 
-  const deleteConvUI = (e: React.FormEvent) => {
+  const deleteConvUI = async (e: React.FormEvent) => {
     e.preventDefault()
     const id = $(e.target).data('id')
     const conv = find(conversations, (t: Conversation) => t.id.toString() == id)
@@ -37,14 +34,16 @@ export default () => {
       console.error('Could not find tune with id: ' + id)
       return
     }
-    collection.remove(conv)
+    await collection.remove(conv)
+    await collection.getList({ tune_id: numId })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!convName.trim() || currentTune == null) return
-    const conv = { id: editConvId, tune_id: currentTune.id, name: convName }
-    !!conv.id ? collection.edit(conv) : collection.create(conv)
+    if (!convName.trim()) return
+    const conv = { id: editConvId, tune_id: numId, name: convName }
+    await (!!conv.id ? collection.edit(conv) : collection.create(conv))
+    await collection.getList({ tune_id: numId })
     setEditConvState(false)
     setEditConvId(0)
     setConvName('')
