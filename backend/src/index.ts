@@ -7,12 +7,12 @@ import cors from 'cors'
 import sqlite from 'sqlite3'
 import { DataModel } from "./lib/DataModel.js"
 import { DataModelApi } from "./lib/api.js"
-import { ConversationKeys, IConversation, IMessage, IModelFormat, ITag, ITune, MessageKeys, ModelFormatKeys, TagKeys, TuneKeys } from "./types.js"
+import { ConversationKeys, IConversation, IMessage, IFormat, ITag, ITune, MessageKeys, FormatKeys, TagKeys, TuneKeys } from "./types.js"
 
 const db: Database = new sqlite.Database('data.db')
 
 db.run("\
-CREATE TABLE IF NOT EXISTS model_formats (\
+CREATE TABLE IF NOT EXISTS formats (\
   id INTEGER PRIMARY KEY AUTOINCREMENT, \
   name TEXT, \
   systemMessage TEXT, \
@@ -58,8 +58,8 @@ app.use(cors());
 app.use(express.json());
 
 new DataModelApi({
-  urlName: 'model-format',
-  model: new DataModel<IModelFormat>('model_formats', db, ModelFormatKeys)
+  urlName: 'format',
+  model: new DataModel<IFormat>('formats', db, FormatKeys)
 }, app, db)
 
 new DataModelApi({

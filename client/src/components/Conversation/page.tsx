@@ -6,7 +6,7 @@ import {
   postMessage, 
   editMessage
 } from './actions';
-import ModelSelector from '../Model_Selector/page';
+import FormatSelector from '../Format_Selector/page';
 
 import { AppState, Message } from '../../lib/types'
 
@@ -15,7 +15,7 @@ const Conversation: React.FC = () => {
   const dispatch = useDispatch()
   const messages = useSelector((state: any) => state.conversation.messages)
   const loading = useSelector((state: any) => state.conversation.loading)
-  const currentModel = useSelector((state: AppState) => state.modelSelector.currentModel)
+  const currentFormat = useSelector((state: AppState) => state.formatSelector.currentFormat)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,16 +34,16 @@ const Conversation: React.FC = () => {
   return (
     <div>
       <h2 className="text-center mb-4">Conversation</h2>
-      <ModelSelector />
-      <div className={currentModel == null ? 'hide' : ''}>
+      <FormatSelector />
+      <div className={currentFormat == null ? 'hide' : ''}>
         <b>System Message:</b>
-        <p dangerouslySetInnerHTML={{ __html: currentModel?.formattedSystemMessage ?? '' }}>
+        <p dangerouslySetInnerHTML={{ __html: currentFormat?.formattedSystemMessage ?? '' }}>
         </p>
       </div>
       <div className="mb-3">
         {messages.map((message: Message, index: number) => (
           <div key={index}>
-            <b>{message.isUser ? currentModel?.userNotation : currentModel?.assistantNotation}</b><br></br>
+            <b>{message.isUser ? currentFormat?.userNotation : currentFormat?.assistantNotation}</b><br></br>
             <p
               data-index={index}
               className={`alert alert-${message.isUser ? 'primary' : 'secondary'}`}
@@ -58,7 +58,7 @@ const Conversation: React.FC = () => {
       <div>
         {loading && <p className="text-info">Loading...</p>}
       </div>
-      <form onSubmit={handleSubmit} className={currentModel == null ? 'hide' : ''}>
+      <form onSubmit={handleSubmit} className={currentFormat == null ? 'hide' : ''}>
         <div className="input-group mb-3">
           <input
             type="text"

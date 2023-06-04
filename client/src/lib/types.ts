@@ -20,7 +20,7 @@ export interface Tune {
   name: string
 }
 
-export interface LanguageModelData {
+export interface Format {
   id: number
   name: string
   systemMessage: string
@@ -41,7 +41,7 @@ export type CurrentTuneState = {
 
 export type AppState = {
   conversation: ConversationState,
-  modelSelector: ModelSelectorState,
+  formatSelector: FormatSelectorState,
   tuneList: ListState<Tune>
   conversationList: ListState<Conversation>
   currentTune: CurrentTuneState
@@ -52,10 +52,10 @@ export interface ConversationState {
   loading: boolean
 }
 
-export interface ModelSelectorState {
+export interface FormatSelectorState {
   loading: boolean
-  models: LanguageModelData[]
-  currentModel: LanguageModelData | null
+  formats: Format[]
+  currentFormat: Format | null
 }
 
 export interface Action<T, C, P> {

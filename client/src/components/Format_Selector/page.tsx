@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import $ from 'jquery'
 import { 
-  getModels,
-  setModel,
-  deleteModel
+  getFormats,
+  setFormat,
+  deleteFormat
 } from './actions'
 import { LanguageModelData, AppState } from "../../lib/types"
 
@@ -18,7 +18,7 @@ const ModelSelector: React.FC = () => {
   const currentModel: LanguageModelData | null = useSelector((state: AppState) => state.modelSelector.currentModel)
   const loading = useSelector((state: AppState) => state.modelSelector.loading);
   useEffect(() => {
-    dispatch(getModels as any)
+    dispatch(getFormats as any)
   }, [])
 
   const selectModel = (e: React.FormEvent) => {
@@ -30,15 +30,15 @@ const ModelSelector: React.FC = () => {
       return
     }
     setModelName(model.name)
-    dispatch(setModel(model) as any)
+    dispatch(setFormat(model) as any)
   }
 
   const deleteModelUI = (e: React.FormEvent) => {
     e.preventDefault()
     if (currentModel == null) return
-    dispatch(deleteModel(currentModel) as any)
+    dispatch(deleteFormat(currentModel) as any)
     setModelName('Select Model')
-    dispatch(setModel(null) as any)
+    dispatch(setFormat(null) as any)
   }
 
   return (

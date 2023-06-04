@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import languageModelReducer from './Conversation/reducer'
-import modelSelectorReducer from './Model_Selector/reducer'
+import modelSelectorReducer from './Format_Selector/reducer'
 import { createCollectionReducer } from '../lib/collection'
 import currentTuneReducer from '../reducers/tune'
 
