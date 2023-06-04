@@ -31,6 +31,17 @@ export class Collection<DT, C extends string> {
     return postApi(`${this.api_midpoint}/${endpoint}`, data)
   }
 
+  public async getOne(id: number): Promise<DT | null> {
+    this.runAction(LOADING, true)
+    let model = null
+    try {
+      model = await this.get(`/get/${id}`) as DT
+    } finally {
+      this.runAction(LOADING, false)
+    }
+    return model
+  }
+
   public async getList() {
     this.runAction(LOADING, true)
     try {
