@@ -12,3 +12,11 @@ TODO:
 Save conversations
 tunes -> conversations -> tags/messages
 model formatting can be selected for any tune
+loras that keep sync of which conversations have been synced to the lora, and create a queue of conversations to be synced
+    What to do about updated conversations? Start over?
+    
+Continous mode which uses PPO algo to assign reward to outputs, can be edited to go back to normal fine tuning
+    Data from continous mode is saved for both conversation and reward
+    
+RLHI mode which trains discriminators to critique output using the same methods as normal tunes
+    A descriminator can be used to reinforce facts, ideas, principals, or personality quirks
