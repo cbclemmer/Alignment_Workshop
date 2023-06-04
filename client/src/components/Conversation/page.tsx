@@ -4,15 +4,18 @@ import $ from 'jquery'
 import { useDispatch, useSelector } from 'react-redux';
 import { 
   postMessage, 
-  editMessage
+  editMessage,
+  addEmptyMessage
 } from './actions';
 import FormatSelector from '../Format_Selector/page';
 
 import { AppState, Conversation, Message } from '../../lib/types'
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { getConversation } from '../../actions/conversation';
 import { Collection } from '../../lib/collection';
 
+
+// TODO: edit message sync with db, delete message
 export default () => {
   const { id } = useParams()
   if (!id || isNaN(parseInt(id))) return (<div>Incorrect ID</div>)
@@ -22,6 +25,7 @@ export default () => {
   const dispatch = useDispatch()
   const loading = useSelector((state: AppState) => state.messageList.loading)
   const messages = useSelector((state: AppState) => state.messageList.items)
+  const conversation = useSelector((state: AppState) => state.currentConversation.conversation)
   const currentFormat = useSelector((state: AppState) => state.formatSelector.currentFormat)
   const collection = new Collection<Message, 'MESSAGE_LIST'>('MESSAGE_LIST', 'message', dispatch)
 
@@ -33,10 +37,15 @@ export default () => {
   const handleSubmit = (e: React.FormEvent) => {
     console.log('SUBMIT')
     e.preventDefault();
-    if (input.trim()) {
-      dispatch(postMessage(input, collection) as any);
-      setInput('');
-    }
+    if (!input.trim() || currentFormat == null || conversation == null) return
+    postMessage(input, currentFormat, conversation, messages, collection);
+    setInput('')
+  }
+
+  const addEmptyMessageUI = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (conversation == null) return
+    addEmptyMessage(collection, messages, conversation.id)
   }
 
   const handleMessageChange = (e: React.FormEvent) => {
@@ -47,6 +56,7 @@ export default () => {
 
   return (
     <div>
+      <Link to={`/tunes/show/${conversation?.tune_id}`}>Current Tune</Link>
       <h2 className="text-center mb-4">Conversation</h2>
       <FormatSelector />
       <div className={currentFormat == null ? 'hide' : ''}>
@@ -61,34 +71,41 @@ export default () => {
         {messages.map((message: Message, index: number) => (
           <div key={index}>
             <b>{message.isUser ? currentFormat?.userNotation : currentFormat?.assistantNotation}</b><br></br>
-            <p
+            <input
+              style={ { width: '100%' } }
+              type="text"
+              defaultValue={message.text_data}
               data-index={index}
               className={`alert alert-${message.isUser ? 'primary' : 'secondary'}`}
-              onInput={handleMessageChange}
-              contentEditable={true}
-            >
-              {message.text_data}
-            </p>
+              onChange={handleMessageChange}  
+            />
           </div>
         ))}
       </div>
       <div>
         {loading && <p className="text-info">Loading...</p>}
       </div>
-      {!loading && <form onSubmit={handleSubmit} className={currentFormat == null ? 'hide' : ''}>
-        <div className="input-group mb-3">
-          <input
-            type="text"
-            className="form-control"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message"
-          />
-          <button className="btn btn-primary" type="submit">
-            Send
-          </button>
-        </div>
-      </form>}
+      {!loading && 
+      <div>
+        <form onSubmit={handleSubmit} className={currentFormat == null ? 'hide' : ''}>
+          <div className="input-group mb-3">
+            <input
+              type="text"
+              className="form-control"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your message"
+            />
+            <button className="btn btn-primary" type="submit">
+              Send
+            </button>
+          </div>
+        </form>
+        <button className='btn btn-primary' onClick={addEmptyMessageUI}>
+          Add Empty Message
+        </button>
+      </div>
+      }
     </div>
   )
 }

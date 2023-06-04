@@ -1,5 +1,5 @@
 import { Collection } from '../../lib/collection';
-import { Message, Action, ActionList, AppState } from '../../lib/types'
+import { Message, Action, ActionList, AppState, Conversation, Format } from '../../lib/types'
 import { createAction } from '../../lib/util'
 import axios from 'axios';
 
@@ -35,21 +35,24 @@ export const editMessage = (index: number, content: string): ConversationActions
   }
 }
 
-export const postMessage = (message: string, collection: Collection<Message, 'MESSAGE_LIST'>) => async (dispatch: any, getState: any) => {
+export const postMessage = async (
+  message: string, 
+  format: Format,
+  conversation: Conversation,
+  messages: Message[],
+  collection: Collection<Message, 'MESSAGE_LIST'>
+) => {
   try {
-    const state: AppState = getState()
-    
-    const format = state.formatSelector.currentFormat
-    if (format == null) return
-    
-    const conversation = state.currentConversation.conversation
-    if (conversation == null) return
-    
-    const userMessage = { id: 0, conversation_id: conversation.id, text_data: message, isUser: 1 } as Message
-    const messages = state.messageList.items
+    const userMessage = await collection.create({ 
+      id: 0, 
+      conversation_id: conversation.id, 
+      text_data: message, 
+      isUser: 1 
+    })
+    if (userMessage == null) return
     messages.push(userMessage)
 
-    const messagesForPrompt = state.messageList.items.map((msg: Message) => {
+    const messagesForPrompt = messages.map((msg: Message) => {
       return (msg.isUser ? format.userNotation : format.assistantNotation) + msg.text_data
     })
     const prompt = format.systemMessage + '\n' + messagesForPrompt.join('\n') + '\n' + format.assistantNotation
@@ -60,12 +63,32 @@ export const postMessage = (message: string, collection: Collection<Message, 'ME
       return
     }
     
-    await collection.create(userMessage)
+    await collection.create({ 
+      id: 0, 
+      conversation_id: conversation.id, 
+      text_data: response.data, 
+      isUser: 0 
+    })
+    collection.getList({ conversation_id: conversation.id })
+  } catch (error) {
+    console.error('Error posting message:', error);
+  }
+}
 
-    const assistantMessage = { id: 0, conversation_id: conversation.id, text_data: response.data, isUser: 0 }
-    messages.push(assistantMessage)
-    collection.runAction('UPDATE', messages)
-    await collection.create(assistantMessage)
+export const addEmptyMessage = async (collection: Collection<Message, 'MESSAGE_LIST'>, messages: Message[], convId: number) => {
+  try {
+    const lastMessageWasUser = messages.length == 0
+      ? false
+      : messages[messages.length - 1].isUser == 1
+    
+    const newMessage = await collection.create({
+      id: 0,
+      conversation_id: convId,
+      text_data: '',
+      isUser: lastMessageWasUser ? 0 : 1
+    })
+    if (newMessage == null) return
+    collection.getList({ conversation_id: convId })
   } catch (error) {
     console.error('Error posting message:', error);
   }

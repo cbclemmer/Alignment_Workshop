@@ -31,14 +31,21 @@ export class DataModel<I extends BaseModel> {
     })
   }
 
-  public static run(db: Database, q: string, params: string[]): Promise<string | null> {
+  public static run(db: Database, q: string, params: string[]): Promise<number> {
     return new Promise((res: any, rej: any) => {
       db.run(q, params, (err: any) => {
         if (err) {
           rej(err.message)
           return
         }
-        res(null)
+        db.get('SELECT last_insert_rowid() as id', function(err: any, row: any) {
+          if (err) {
+            rej(err.message);
+            return;
+          }
+          
+          res(row.id)
+        })
       })
     })
   }
@@ -92,10 +99,12 @@ export class DataModel<I extends BaseModel> {
       const queryData = lo.values(lo.omit(data, 'id')) as string[]
       console.log(queryData)
 
-      await DataModel.run(this.db, 
+      const id = await DataModel.run(this.db, 
         query, 
         queryData
       )
+      
+      data.id = id
       return data
     } catch (e) {
       console.error(e)

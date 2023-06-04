@@ -52,17 +52,20 @@ export class Collection<DT, C extends string> {
     }
   }
 
-  public async create(data: DT) {
+  public async create(data: DT): Promise<DT | null> {
     this.runAction(LOADING, true)
+    let model = null
     try {
       const res = await this.post('create', data)
-      if (!res) {
-        console.error('ERROR: creating tune failed')
-        return
+      if (!res || res.status != 200) {
+        console.error('ERROR: creating tune failed: ' + res.data)
+        return null
       }
+      model = res.data
     } finally {
       this.runAction(LOADING, false)
     }
+    return model as DT
   }
 
   public async edit(data: DT) {

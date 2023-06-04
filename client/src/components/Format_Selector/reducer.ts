@@ -4,7 +4,13 @@ import { Action, Format, FormatSelectorState } from "../../lib/types"
 const initialState: FormatSelectorState = {
     loading: true,
     formats: [],
-    currentFormat: null
+    currentFormat: {
+        id: 0,
+        name: 'Default',
+        systemMessage: '',
+        userNotation: 'User:',
+        assistantNotation: 'Assistant:',
+    }
 }
 
 function formatSystemMessage(systemMessage: string) {
