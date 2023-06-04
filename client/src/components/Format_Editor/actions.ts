@@ -21,7 +21,7 @@ export const editFormat = async (navigate: any, data: Format) => {
 }
 
 export const retrieveFormat = async (id: number): Promise<Format | null> => {
-  const res = await getApi(`model-format/get/${id}/`)
+  const res = await getApi(`format/get/${id}/`)
   if (res.data.error) {
     console.error('ERROR: ' + res.data.error)
     return null

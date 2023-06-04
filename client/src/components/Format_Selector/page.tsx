@@ -11,17 +11,17 @@ import {
 } from './actions'
 import { Format, AppState } from "../../lib/types"
 
-const ModelSelector: React.FC = () => {
-  const [formatName, setModelName] = useState('Select Model')
+export default () => {
+  const [formatName, setFormatName] = useState('Select Format')
   const dispatch = useDispatch()
   const formats: Format[] = useSelector((state: AppState) => state.formatSelector.formats)
-  const currentModel: Format | null = useSelector((state: AppState) => state.formatSelector.currentFormat)
+  const currentFormat: Format | null = useSelector((state: AppState) => state.formatSelector.currentFormat)
   const loading = useSelector((state: AppState) => state.formatSelector.loading);
   useEffect(() => {
     dispatch(getFormats as any)
   }, [])
 
-  const selectModel = (e: React.FormEvent) => {
+  const selectFormat = (e: React.FormEvent) => {
     e.preventDefault()
     const id = $(e.target).data('id')
     const format = find(formats, (m: Format) => m.id.toString() == id)
@@ -29,22 +29,22 @@ const ModelSelector: React.FC = () => {
       console.error('Could not find format with id: ' + id)
       return
     }
-    setModelName(format.name)
+    setFormatName(format.name)
     dispatch(setFormat(format) as any)
   }
 
-  const deleteModelUI = (e: React.FormEvent) => {
+  const deleteFormatUI = (e: React.FormEvent) => {
     e.preventDefault()
-    if (currentModel == null) return
-    dispatch(deleteFormat(currentModel) as any)
-    setModelName('Select Model')
+    if (currentFormat == null) return
+    dispatch(deleteFormat(currentFormat) as any)
+    setFormatName('Select Format')
     dispatch(setFormat(null) as any)
   }
 
   return (
     <div>
       <b className={loading ? '' : 'hide'}>
-        Loading Models...
+        Loading Formats...
       </b>
       <div className={loading ? 'hide' : ''}>
         <div className='row g-4'>
@@ -63,7 +63,7 @@ const ModelSelector: React.FC = () => {
                         key={format.id} 
                         className="dropdown-item" 
                         data-id={format.id}
-                        onClick={selectModel}
+                        onClick={selectFormat}
                       >
                         {format.name}
                       </li>
@@ -74,17 +74,17 @@ const ModelSelector: React.FC = () => {
           </div>
           <div className='col-md'>
             <div className='form-floating'>
-              <Link to="/formats/new">Add Model</Link> 
+              <Link to="/formats/new">Add Format</Link> 
             </div> 
           </div>
           <div className='col-md'>
             <div className='form-floating'>
-              {currentModel != null && <Link to={"/format/" + currentModel.id}>Edit Model</Link>}
+              {currentFormat != null && <Link to={"/formats/edit/" + currentFormat.id}>Edit Format</Link>}
             </div> 
           </div>
-          {currentModel != null && <div className='col-md'>
-            <a href='#' className='form-floating' onClick={deleteModelUI}>
-              Delete Model
+          {currentFormat != null && <div className='col-md'>
+            <a href='#' className='form-floating' onClick={deleteFormatUI}>
+              Delete Format
             </a> 
           </div>}
         </div>
@@ -92,5 +92,3 @@ const ModelSelector: React.FC = () => {
     </div>
   )
 }
-
-export default ModelSelector

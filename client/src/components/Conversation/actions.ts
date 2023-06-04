@@ -37,8 +37,6 @@ export const editMessage = (index: number, content: string): ConversationActions
 
 export const postMessage = (message: string, collection: Collection<Message, 'MESSAGE_LIST'>) => async (dispatch: any, getState: any) => {
   try {
-    // runAction(dispatch, LOADING, true)
-    
     const state: AppState = getState()
     
     const format = state.formatSelector.currentFormat
@@ -67,8 +65,6 @@ export const postMessage = (message: string, collection: Collection<Message, 'ME
     const assistantMessage = { id: 0, conversation_id: conversation.id, text_data: response.data, isUser: 0 }
     messages.push(assistantMessage)
     collection.runAction('UPDATE', messages)
-
-    // runAction(dispatch, LOADING, false)
     await collection.create(assistantMessage)
   } catch (error) {
     console.error('Error posting message:', error);

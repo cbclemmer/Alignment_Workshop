@@ -19,6 +19,7 @@ const App: React.FC = () => {
           <Route path="/tunes/show/:id" element={<TuneShow />} />
           <Route path="/conversations/show/:id" element={<Conversation />} />
           <Route path="/formats/new" element={<FormatEditor />} />
+          <Route path="/formats/edit/:id" element={<FormatEditor />} />
         </Routes>
       </Router>
     </div>

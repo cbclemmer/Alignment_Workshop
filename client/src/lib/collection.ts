@@ -96,7 +96,6 @@ export const createCollectionReducer = <DT, C extends string, K extends keyof Li
   state: ListState<DT> = { loading: false, items: [] }, 
   action: Action<keyof ListActions<DT, C>, C, ListActions<DT, C>[K]['payload']>
 ): ListState<DT> => {
-  console.log(action)
   if (action.component != component) return state
   switch (action.type) {
       case LOADING:
