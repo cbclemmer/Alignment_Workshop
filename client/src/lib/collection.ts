@@ -68,17 +68,20 @@ export class Collection<DT, C extends string> {
     return model as DT
   }
 
-  public async edit(data: DT) {
+  public async edit(data: DT): Promise<boolean> {
     this.runAction(LOADING, true)
+    let ret = false
     try {
       const res = await this.post('edit', data)
       if (!res) {
         console.error('ERROR: creating tune failed')
-        return
+        return false
       }
+      ret = res.data
     } finally {
       this.runAction(LOADING, false)
     }
+    return ret
   }
 
   public async remove(model: DT) {

@@ -15,7 +15,7 @@ import { getConversation } from '../../actions/conversation';
 import { Collection } from '../../lib/collection';
 
 
-// TODO: edit message sync with db, delete message
+// TODO: delete message
 export default () => {
   const { id } = useParams()
   if (!id || isNaN(parseInt(id))) return (<div>Incorrect ID</div>)
@@ -48,10 +48,12 @@ export default () => {
     addEmptyMessage(collection, messages, conversation.id)
   }
 
-  const handleMessageChange = (e: React.FormEvent) => {
+  const handleMessageChange = (e: any) => {
     const index = $(e.target).data('index')
-    const text = $(e.target).text()
-    dispatch(editMessage(index, text) as any)
+    const text = e.target.value
+    const message = messages[index]
+    if (conversation == null) return
+    editMessage(conversation.id, text, message, collection)
   }
 
   return (
@@ -77,7 +79,7 @@ export default () => {
               defaultValue={message.text_data}
               data-index={index}
               className={`alert alert-${message.isUser ? 'primary' : 'secondary'}`}
-              onChange={handleMessageChange}  
+              onBlur={handleMessageChange}  
             />
           </div>
         ))}

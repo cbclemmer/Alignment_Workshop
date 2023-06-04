@@ -24,14 +24,19 @@ function runAction<K extends keyof ConversationActions>(dispatch: any, type: K, 
   return dispatch(createAction<ConversationActions, K>(type, COMPONENT, payload))
 }
 
-export const editMessage = (index: number, content: string): ConversationActions[typeof EDIT_MESSAGE] => {
-  return {
-    type: EDIT_MESSAGE,
-    component: COMPONENT,
-    payload: {
-      index,
-      content
-    }
+export const editMessage = async (
+  convId: number,
+  newText: string,
+  message: Message,
+  collection: Collection<Message, 'MESSAGE_LIST'>
+) => {
+  try {
+    message.text_data = newText
+    const edited = await collection.edit(message)
+    if (!edited) return
+    collection.getList({ conversation_id: convId })
+  } catch (e) {
+    console.error('Error editing message')
   }
 }
 
