@@ -34,11 +34,17 @@ export type ListState<DT> = {
   items: DT[]
 }
 
+export type CurrentTuneState = {
+  tune: Tune | null,
+  loading: boolean
+}
+
 export type AppState = {
   conversation: ConversationState,
   modelSelector: ModelSelectorState,
   tuneList: ListState<Tune>
   conversationList: ListState<Conversation>
+  currentTune: CurrentTuneState
 }
 
 export interface ConversationState {
