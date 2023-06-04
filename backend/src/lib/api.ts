@@ -31,7 +31,7 @@ export class DataModelApi<I extends BaseModel> {
 
     // /api/foo/list
     app.get(makeStaticUrl('list'), async (req: any, res: any) => {
-      const models = await params.model.list()
+      const models = await params.model.list(req.query)
       if (models == null) {
         res.json([])
         return

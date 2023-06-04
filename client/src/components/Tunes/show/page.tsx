@@ -26,7 +26,7 @@ export default () => {
   const collection = new Collection<Conversation, 'CONV_LIST'>('CONV_LIST', 'conversation', dispatch)
   useEffect(() => {
     getTune(dispatch, numId)
-    collection.getList()
+    collection.getList({ tune_id: numId })
   }, [])
 
   const deleteConvUI = (e: React.FormEvent) => {

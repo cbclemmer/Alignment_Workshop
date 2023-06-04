@@ -65,9 +65,15 @@ export class DataModel<I extends BaseModel> {
     return DataModel.getById<I>(this.db, this.table, id)
   }
 
-  public async list(): Promise<I[] | null> {
+  public async list(params: any = { }): Promise<I[] | null> {
     try {
-      return await DataModel.dbList(this.db, `SELECT * FROM ${this.table}`, [])
+      const whereClause = Object.keys(params).map(k => `${k} = ?`).join(', ')
+      const query = `SELECT * FROM ${this.table} ${whereClause.length > 0 ? 'WHERE' : ''} ${whereClause}`
+      console.log('Running create query')
+      console.log(query)
+
+      const queryData = lo.values(params) as string[]
+      return await DataModel.dbList(this.db, query, queryData)
     } catch (e) {
       console.error(e)
       return null
