@@ -64,7 +64,7 @@ export default () => {
   return (
     <div>
       <Link to={`/tunes/show/${conversation?.tune_id}`}>Current Tune</Link>
-      <h2 className="text-center mb-4">Conversation</h2>
+      <h2 className="text-center mb-4">Conversation: {conversation?.name}</h2>
       <FormatSelector />
       <div className={currentFormat == null ? 'hide' : ''}>
         <b>System Message:</b>

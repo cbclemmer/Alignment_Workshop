@@ -1,12 +1,14 @@
 import { Database } from "sqlite3"
 import { Application } from 'express'
-import { callPythonScript } from "./util.js"
 
 import express from 'express'
 import cors from 'cors'
 import sqlite from 'sqlite3'
+import _ from "lodash"
+
 import { DataModel } from "./lib/DataModel.js"
 import { DataModelApi } from "./lib/api.js"
+import { callPythonScript, createTuneFile } from "./util.js"
 import { ConversationKeys, IConversation, IMessage, IFormat, ITag, ITune, MessageKeys, FormatKeys, TagKeys, TuneKeys } from "./types.js"
 
 const db: Database = new sqlite.Database('data.db')
@@ -57,9 +59,10 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
+const formatModel = new DataModel<IFormat>('formats', db, FormatKeys)
 new DataModelApi({
   urlName: 'format',
-  model: new DataModel<IFormat>('formats', db, FormatKeys)
+  model: formatModel
 }, app, db)
 
 new DataModelApi({
@@ -67,14 +70,16 @@ new DataModelApi({
   model: new DataModel<ITune>('tunes', db, TuneKeys)
 }, app, db)
 
+const messageModel = new DataModel<IMessage>('messages', db, MessageKeys)
 new DataModelApi({
   urlName: 'message',
-  model: new DataModel<IMessage>('messages', db, MessageKeys)
+  model: messageModel
 }, app, db)
 
+const convModel = new DataModel<IConversation>('conversations', db, ConversationKeys)
 new DataModelApi({
   urlName: 'conversation',
-  model: new DataModel<IConversation>('conversations', db, ConversationKeys)
+  model: convModel
 }, app, db)
 
 new DataModelApi({
@@ -90,8 +95,36 @@ app.post('/api/generate', async (req: any, res: any) => {
     console.error('Error making request to language model API:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-});
+})
+
+app.get('/api/tunes/download', async (req: any, res: any) => {
+  const { tune_id, format_id } = req.query
+  if (!tune_id) {
+    res.json({ error: 'Missing tune id' })
+    return
+  }
+  if (!format_id) {
+    res.json({ error: 'Missing format id' })
+    return
+  }
+  const conversations = await convModel.list({ tune_id })
+  if (conversations == null) {
+    res.json({ error: 'Could not get conversations for tune id: ' + tune_id })
+    return
+  }
+  const format = await formatModel.get(format_id)
+  if (format == null) {
+    res.json({ error: 'Could not get format for id: ' + format_id })
+    return
+  }
+  const messages = await Promise.all(conversations.map(async (c: IConversation) => await messageModel.list({ conversation_id: c.id })))
+  const downloadString = createTuneFile(_.flatMap(messages, (m: IMessage[] | null) => m == null ? [] : m), format)
+  
+  res.setHeader('Content-Disposition', 'attachment; filename=tune.jsonl')
+  res.setHeader('Content-Type', 'text/plain')
+  res.send(downloadString)
+})
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+  console.log(`Server is running on port ${PORT}`)
+})

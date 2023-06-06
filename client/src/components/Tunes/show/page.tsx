@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
+import { download } from '../../../lib/api'
 
 import { find } from 'lodash'
 import $ from 'jquery'
 
 import { AppState, Conversation, Tune } from '../../../lib/types'
 import { Collection } from '../../../lib/collection'
+import FormatSelector from '../../Format_Selector/page'
 
 export default () => {
   const { id } = useParams()
@@ -15,6 +17,7 @@ export default () => {
   
   const conversations = useSelector((state: AppState) => state.conversationList.items)
   const loading = useSelector((state: AppState) => state.conversationList.loading)
+  const currentFormat = useSelector((state: AppState) => state.formatSelector.currentFormat)
 
   const dispatch = useDispatch()
   const collection = new Collection<Conversation, 'CONV_LIST'>('CONV_LIST', 'conversation', dispatch)
@@ -34,10 +37,29 @@ export default () => {
     await collection.getList({ tune_id: numId })
   }
 
+  const downloadTune = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (currentFormat == null || currentFormat.id == 0) return
+    try {
+      await download('tunes/download', { tune_id: id, format_id: currentFormat.id })
+    } catch (e) {
+      console.error('Tune Download Failed: ' + e)
+    }
+  }
+
   return (
     <div>
       {(loading) && <div>Loading...</div>}
       {!loading && <div>
+      <FormatSelector />
+      {currentFormat != null && currentFormat.id != 0 &&
+      <button 
+        style={ { marginTop: '20px' } }
+        className='btn btn-primary'
+        onClick={downloadTune}
+      >
+        Download
+      </button>}
       <div style={ { marginTop: '15px' } }>
         <h2>Conversations</h2>
         <Link to={`/conversations/new/${id}`}>New Conversation</Link>

@@ -38,3 +38,8 @@ export interface IConversation {
   tune_id: number
   name: string
 }
+
+export type Completion = {
+  input: string,
+  output: string
+}
