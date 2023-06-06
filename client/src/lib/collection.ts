@@ -23,8 +23,8 @@ export class Collection<DT, C extends string> {
     this.runAction = <K extends keyof ListActions<DT, C>>(type: K, payload: ListActions<DT, C>[K]['payload']) => runAction<DT, C, K>(component, dispatch, type, payload)
   }
 
-  private async get(endpoint: string, data: any = { }) {
-    return getApi(`${this.api_midpoint}/${endpoint}`, data)
+  private async get(endpoint: string, data: any = { }): Promise<any> {
+    return (await getApi(`${this.api_midpoint}/${endpoint}`, data))
   }
 
   private async post(endpoint: string, data: DT) {
@@ -35,7 +35,7 @@ export class Collection<DT, C extends string> {
     this.runAction(LOADING, true)
     let model = null
     try {
-      model = await this.get(`/get/${id}`) as DT
+      model = (await this.get(`get/${id}`)).data as DT
     } finally {
       this.runAction(LOADING, false)
     }
@@ -95,6 +95,10 @@ export class Collection<DT, C extends string> {
     } finally {
       this.runAction(LOADING, false)
     }
+  }
+
+  public async emptyList() {
+    this.runAction(UPDATE, [])
   }
 }
 

@@ -6,7 +6,7 @@ import { download } from '../../../lib/api'
 import { find } from 'lodash'
 import $ from 'jquery'
 
-import { AppState, Conversation, Tune } from '../../../lib/types'
+import { AppState, Conversation, Tune, Message } from '../../../lib/types'
 import { Collection } from '../../../lib/collection'
 import FormatSelector from '../../Format_Selector/page'
 
@@ -15,14 +15,23 @@ export default () => {
   if (!id || isNaN(parseInt(id))) return (<div></div>)
   const numId = parseInt(id)
   
+  const [currentTune, setCurrentTune] = useState('')
   const conversations = useSelector((state: AppState) => state.conversationList.items)
   const loading = useSelector((state: AppState) => state.conversationList.loading)
   const currentFormat = useSelector((state: AppState) => state.formatSelector.currentFormat)
 
   const dispatch = useDispatch()
   const collection = new Collection<Conversation, 'CONV_LIST'>('CONV_LIST', 'conversation', dispatch)
+  const messageCollection = new Collection<Message, 'MESSAGE_LIST'>('MESSAGE_LIST', 'message', dispatch)
+  const tuneCollection = new Collection<Tune, 'TUNE_LIST'>('TUNE_LIST', 'tune', dispatch)
   useEffect(() => {
-    collection.getList({ tune_id: numId })
+    (async () => {
+      await messageCollection.emptyList()
+      await collection.getList({ tune_id: numId })
+      const tune = await tuneCollection.getOne(numId)
+      if (tune == null) return
+      setCurrentTune(tune.name)
+    })()
   }, [])
 
   const deleteConvUI = async (e: React.FormEvent) => {
@@ -51,6 +60,7 @@ export default () => {
     <div>
       {(loading) && <div>Loading...</div>}
       {!loading && <div>
+      <h2>Tune: {currentTune}</h2>
       <FormatSelector />
       {currentFormat != null && currentFormat.id != 0 &&
       <button 
