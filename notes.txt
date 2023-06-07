@@ -13,6 +13,7 @@ TODO:
 tunes -> conversations -> tags/messages
 upload tune w conversations
 model formatting can be selected for any tune
+Add token counts for selected model to conversation page
 loras that keep sync of which conversations have been synced to the lora, and create a queue of conversations to be synced
     What to do about updated conversations? Start over?
     
