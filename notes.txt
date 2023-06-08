@@ -10,6 +10,7 @@ Features:
 
 TODO:
 Make it pretty
+Allow for filtering conversations with tags
 // Save conversations
 tunes -> conversations -> tags/messages
 upload tune w conversations
