@@ -9,6 +9,7 @@ Features:
 
 
 TODO:
+Make it pretty
 // Save conversations
 tunes -> conversations -> tags/messages
 upload tune w conversations
