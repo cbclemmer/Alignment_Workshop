@@ -15,6 +15,7 @@ Allow for filtering conversations with tags
 tunes -> conversations -> tags/messages
 upload tune w conversations
 model formatting can be selected for any tune
+option to create completions skipping some of the beginning messages, so that it doesn't look like the conversation has to start at a particular point.
 Add token counts for selected model to conversation page
 loras that keep sync of which conversations have been synced to the lora, and create a queue of conversations to be synced
     What to do about updated conversations? Start over?
