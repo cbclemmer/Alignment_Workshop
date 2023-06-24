@@ -25,3 +25,7 @@ Continous mode which uses PPO algo to assign reward to outputs, can be edited to
     
 RLHI mode which trains discriminators to critique output using the same methods as normal tunes
     A descriminator can be used to reinforce facts, ideas, principals, or personality quirks
+
+
+Add ability to have bot respond as user
+Add ability to create discriminators by a 5 star system and automatically build dataset.
