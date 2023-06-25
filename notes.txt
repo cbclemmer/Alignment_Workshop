@@ -29,3 +29,4 @@ RLHI mode which trains discriminators to critique output using the same methods 
 
 Add ability to have bot respond as user
 Add ability to create discriminators by a 5 star system and automatically build dataset.
+regenerate a single message based on the messages before it.
