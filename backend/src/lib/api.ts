@@ -4,9 +4,24 @@ import { Database } from "sqlite3"
 import { DataModel } from './DataModel.js'
 import { BaseModel } from "../types.js"
 
+import fs from 'fs'
+
+var config = JSON.parse(fs.readFileSync('config.json', 'utf8'))
+if (config.pwd === undefined) {
+  throw new Error('Could not find pwd in config file')
+}
+
 export type ApiParams<I extends BaseModel> = {
   urlName: string
   model: DataModel<I>  
+}
+
+function checkPwd(pwd: string, res: any) {
+  if (config.pwd !== pwd) {
+    res.json({ error: 'Password does not match'})
+    return false
+  }
+  return true
 }
 
 export class DataModelApi<I extends BaseModel> {
@@ -21,6 +36,9 @@ export class DataModelApi<I extends BaseModel> {
         res.json({ error: 'No model id supplied'})
         return
       }
+      if (!checkPwd(req.params.pwd, res)) {
+        return
+      }
       const model = await params.model.get(id)
       if (model == null) {
         res.json({ error: `Model id: ${id} not found`})
@@ -31,6 +49,9 @@ export class DataModelApi<I extends BaseModel> {
 
     // /api/foo/list
     app.get(makeStaticUrl('list'), async (req: any, res: any) => {
+      if (!checkPwd(req.params.pwd, res)) {
+        return
+      }
       const models = await params.model.list(req.query)
       if (models == null) {
         res.json([])
@@ -41,6 +62,9 @@ export class DataModelApi<I extends BaseModel> {
 
     // /api/foo/create
     app.post(makeStaticUrl('create'), async (req: any, res: any) => {
+      if (!checkPwd(req.params.pwd, res)) {
+        return
+      }
       const data: I = req.body
       data.id = parseInt(data.id.toString())
       const model = await params.model.create(data)
@@ -49,6 +73,9 @@ export class DataModelApi<I extends BaseModel> {
 
     // /api/foo/edit
     app.post(makeStaticUrl('edit'), async (req: any, res: any) => {
+      if (!checkPwd(req.body.pwd, res)) {
+        return
+      }
       const data: I = req.body
       if (!data.id) {
         const err = 'Error: No id supplied for editing model'
@@ -63,6 +90,9 @@ export class DataModelApi<I extends BaseModel> {
 
     // /api/foo/delete
     app.post(makeStaticUrl('delete'), async (req: any, res: any) => {
+      if (!checkPwd(req.body.pwd, res)) {
+        return
+      }
       const data: I = req.body
       if (!data.id) {
         const err = 'Error: No id supplied for editing model'
