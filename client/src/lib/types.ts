@@ -20,6 +20,7 @@ export interface Conversation {
 export interface Tune {
   id: number
   name: string
+  format_id: number
 }
 
 export interface Tag {

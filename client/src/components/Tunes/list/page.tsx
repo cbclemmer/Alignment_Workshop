@@ -5,7 +5,9 @@ import { Link } from 'react-router-dom'
 import { find } from 'lodash'
 import $ from 'jquery'
 
-import { AppState, Tune } from '../../../lib/types'
+import { setFormat } from '../../Format_Selector/actions'
+import FormatSelector from '../../Format_Selector/page';
+import { AppState, Tune, Format } from '../../../lib/types'
 import { Collection } from '../../../lib/collection'
 
 export default () => {
@@ -15,11 +17,14 @@ export default () => {
   
   const tunes = useSelector((state: AppState) => state.tuneList.items)
   const loading = useSelector((state: AppState) => state.tuneList.loading)
-
+  const currentFormat = useSelector((state: AppState) => state.formatSelector.currentFormat)
+  
   const dispatch = useDispatch()
   const collection = new Collection<Tune, 'TUNE_LIST'>('TUNE_LIST', 'tune', dispatch)
+  const fmtCollection = new Collection<Format, 'FMT'>('FMT', 'format', dispatch)
   useEffect(() => {
     collection.getList()
+    dispatch(setFormat(null) as any)
   }, [])
 
   const deleteTuneUI = async (e: React.FormEvent) => {
@@ -39,8 +44,15 @@ export default () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!tuneName.trim()) return
-    const tune = { id: editTuneId, name: tuneName }
+    if (!tuneName.trim()){
+      alert('Must enter tune name')
+      return
+    }
+    if (currentFormat == null || !currentFormat.id) {
+      alert('Must select a format for the tune')
+      return
+    }
+    const tune = { id: editTuneId, name: tuneName, format_id: currentFormat.id }
     await (!!tune.id ? collection.edit(tune) : collection.create(tune))
     setEditTuneState(false)
     setEditTuneId(0)
@@ -56,12 +68,16 @@ export default () => {
       console.error('Could not find tune with id: ' + id)
       return
     }
-
-    $('#collapseOne').addClass('show')
-
-    setEditTuneState(true)
-    setTuneName(tune.name)
-    setEditTuneId(tune.id)
+    (async () => {
+      const format = await fmtCollection.getOne(tune.format_id)
+      if (format == null) return
+      dispatch(setFormat(format) as any)
+      $('#collapseOne').addClass('show')
+  
+      setEditTuneState(true)
+      setTuneName(tune.name)
+      setEditTuneId(tune.id)
+    })()
   }
 
   const stopEditing = (e: React.FormEvent) => {
@@ -70,6 +86,7 @@ export default () => {
     setEditTuneId(0)
     setEditTuneState(false)
     setTuneName('')
+    dispatch(setFormat(null) as any)
   }
 
   return (
@@ -88,7 +105,7 @@ export default () => {
           <div className="accordion-item">
             <h2 className="accordion-header">
               <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-controls="collapseOne">
-                {editTuneState ? 'Edit Tune Name' : 'New Tune' }
+                {editTuneState ? 'Edit Tune' : 'New Tune' }
               </button>
             </h2>
             <div id="collapseOne" className="accordion-collapse collapse" data-bs-parent="#newTune">
@@ -106,6 +123,9 @@ export default () => {
                       value={tuneName}
                       onChange={(e) => setTuneName(e.target.value)}
                       />
+                  </div>
+                  <div className='input-group mb-3'>
+                    <FormatSelector />
                   </div>
                   <button className="btn btn-primary" type="submit">
                     {editTuneState ? 'Edit' : 'Create' }

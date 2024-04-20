@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
+import { download } from '../../../lib/api'
 
 import { find } from 'lodash'
 import $ from 'jquery'
 
 import { AppState, Conversation, Tune, Message } from '../../../lib/types'
 import { Collection } from '../../../lib/collection'
-import FormatSelector from '../../Format_Selector/page'
 
 export default () => {
   const { id } = useParams()
@@ -47,8 +47,15 @@ export default () => {
     await collection.getList({ tune_id: numId })
   }
 
+  const downloadTune = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      await download('tunes/download', { tune_id: id })
+    } catch (e) {
+      console.error('Tune Download Failed: ' + e)
+    }
+  }
   
-
   return (
     <div>
       <nav aria-label="breadcrumb">
@@ -64,13 +71,19 @@ export default () => {
       {(loading) && <div>Loading...</div>}
       {!loading && <div>
       <h2>Tune: {currentTune}</h2>
-      <FormatSelector tuneId={numId} showDownload={true}/>
+      <button 
+        style={ { marginTop: '20px' } }
+        className='btn btn-primary'
+        onClick={downloadTune}
+      >
+        Download tune data
+      </button>
+      
       <div style={ { marginTop: '15px' } }>
         <h2>Conversations</h2>
         <Link to={`/conversations/new/${id}`} className='btn btn-primary'>New Conversation</Link>
         <ul className='list-group' style={ { marginTop: '15px' } }>
-
-          {conversations.map((tune: Tune, index: number) => (
+          {conversations.map((tune: Conversation, index: number) => (
             <li key={index} className='list-group-item'>
               <h4>
               <Link to={`/conversations/show/${tune.id}`}>{tune.name}</Link>

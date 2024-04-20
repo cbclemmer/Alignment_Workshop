@@ -7,10 +7,10 @@ import {
   editMessage,
   addEmptyMessage,
   removeLastMessage
-} from './actions';
-import FormatSelector from '../Format_Selector/page';
+} from './actions'
 
-import { AppState, Message } from '../../lib/types'
+import { setFormat } from '../Format_Selector/actions'
+import { AppState, Message, Tune, Conversation, Format } from '../../lib/types'
 import { Link, useParams } from 'react-router-dom';
 import { getConversation } from '../../actions/conversation';
 import { Collection } from '../../lib/collection';
@@ -26,31 +26,44 @@ export default () => {
   const messages = useSelector((state: AppState) => state.messageList.items)
   const conversation = useSelector((state: AppState) => state.currentConversation.conversation)
   const currentFormat = useSelector((state: AppState) => state.formatSelector.currentFormat)
-  const collection = new Collection<Message, 'MESSAGE_LIST'>('MESSAGE_LIST', 'message', dispatch)
+  const tuneCollection = new Collection<Tune, 'TUNE_LIST'>('TUNE_LIST', 'tune', dispatch)
+  const convCollection = new Collection<Conversation, 'CONV_LIST'>('CONV_LIST', 'conversation', dispatch)
+  const msgCollection = new Collection<Message, 'MESSAGE_LIST'>('MESSAGE_LIST', 'message', dispatch)
+  const fmtCollection = new Collection<Format, 'FMT'>('FMT', 'format', dispatch)
 
   useEffect(() => {
-    getConversation(dispatch, numId)
-    collection.getList({ conversation_id: numId })
+    (async () => {
+      getConversation(dispatch, numId)
+      const conv = await convCollection.getOne(numId)
+      if (conv == null) return
+      const tune = await tuneCollection.getOne(conv.tune_id)
+      if (tune == null) return
+      const format = await fmtCollection.getOne(tune.format_id)
+      if (format == null) return
+      dispatch(setFormat(format) as any)
+  
+      msgCollection.getList({ conversation_id: numId })
+    })()
   }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     console.log('SUBMIT')
     e.preventDefault();
     if (!input.trim() || currentFormat == null || conversation == null) return
-    postMessage(input, currentFormat, conversation, messages, collection);
+    postMessage(input, currentFormat, conversation, messages, msgCollection);
     setInput('')
   }
 
   const addEmptyMessageUI = (e: React.FormEvent) => {
     e.preventDefault()
     if (conversation == null) return
-    addEmptyMessage(collection, messages, conversation.id)
+    addEmptyMessage(msgCollection, messages, conversation.id)
   }
 
   const removeLastMessageUI = (e: React.FormEvent) => {
     e.preventDefault()
     if (conversation == null) return
-    removeLastMessage(collection, messages, conversation.id)
+    removeLastMessage(msgCollection, messages, conversation.id)
   }
 
   const handleMessageChange = (e: any) => {
@@ -58,7 +71,7 @@ export default () => {
     const text = e.target.value
     const message = messages[index]
     if (conversation == null) return
-    editMessage(conversation.id, text, message, collection)
+    editMessage(conversation.id, text, message, msgCollection)
   }
 
   return (
@@ -77,7 +90,6 @@ export default () => {
         </ol>
       </nav>
       <h2 className="text-center mb-4">Conversation: {conversation?.name}</h2>
-      <FormatSelector tuneId={conversation?.tune_id || 0} showDownload={false}/>
       <div className={currentFormat != null && currentFormat.id ? '' : 'hide'}>
         <b>System Message:</b>
         <div className='alert alert-light' role='alert' style={ { marginTop: '15px' } }>

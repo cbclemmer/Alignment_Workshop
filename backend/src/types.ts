@@ -11,10 +11,11 @@ export interface IFormat extends BaseModel {
   assistantNotation: string
 }
 
-export const TuneKeys: (keyof ITune)[] = ['id', 'name']
+export const TuneKeys: (keyof ITune)[] = ['id', 'name', 'format_id']
 export interface ITune {
   id: number
   name: string
+  format_id: number
 }
 
 export const TagKeys: (keyof ITag)[] = ['id', 'name', 'conversation_id']

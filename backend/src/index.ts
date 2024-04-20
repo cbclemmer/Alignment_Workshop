@@ -25,7 +25,9 @@ CREATE TABLE IF NOT EXISTS formats (\
 db.run("\
 CREATE TABLE IF NOT EXISTS tunes (\
   id INTEGER PRIMARY KEY AUTOINCREMENT, \
-  name TEXT\
+  name TEXT,\
+  format_id INTEGER,\
+  FOREIGN KEY (format_id) REFERENCES formats(id)\
 );");
 
 db.run("\

@@ -12,7 +12,7 @@ import {
 import { Format, AppState } from "../../lib/types"
 import { download } from '../../lib/api'
 
-export default ({ tuneId, showDownload }: { tuneId: number, showDownload: boolean }) => {
+export default () => {
   const [formatName, setFormatName] = useState('Select Format')
   const dispatch = useDispatch()
   const formats: Format[] = useSelector((state: AppState) => state.formatSelector.formats)
@@ -32,16 +32,6 @@ export default ({ tuneId, showDownload }: { tuneId: number, showDownload: boolea
     }
     setFormatName(format.name)
     dispatch(setFormat(format) as any)
-  }
-
-  const downloadTune = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (currentFormat == null || currentFormat.id == 0) return
-    try {
-      await download('tunes/download', { tune_id: tuneId, format_id: currentFormat.id })
-    } catch (e) {
-      console.error('Tune Download Failed: ' + e)
-    }
   }
 
   const deleteFormatUI = (e: React.FormEvent) => {
@@ -70,7 +60,7 @@ export default ({ tuneId, showDownload }: { tuneId: number, showDownload: boolea
                     type="button" 
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
-                  >{formatName}</button>
+                  >Select Format</button>
                   <ul className="dropdown-menu">
                     {formats.map((format: Format) => (
                       <li 
@@ -103,16 +93,6 @@ export default ({ tuneId, showDownload }: { tuneId: number, showDownload: boolea
             <a href='#' className='form-floating' onClick={deleteFormatUI}>
               Delete Format
             </a>
-            {showDownload && 
-            <div>
-              <button 
-                style={ { marginTop: '20px' } }
-                className='btn btn-primary'
-                onClick={downloadTune}
-              >
-                Download tune data with this format
-              </button>
-            </div>}
           </div>
         }
       </div>
