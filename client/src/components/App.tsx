@@ -9,24 +9,26 @@ import FormatEditor from './Format_Editor/page'
 
 const App: React.FC = () => {
   return (
-    <div className="container">
-      <div style={ { marginBottom: '20px' } }></div>
-      <nav>
-        <a href='/'>Home</a>
+    <div>
+      <nav className='navbar navbar-expand-lg bg-body-tertiary' style={ { backgroundColor: '#e3f2fd' }}>
+        <a className='navbar-brand' href='/' style={ { marginLeft: '30px' }}>Home</a>
       </nav>
-      <Router>
-        <Routes>
-          <Route path="/" element={<TuneList />} />
-          <Route path="/tunes/show/:id" element={<TuneShow />} />
-          
-          <Route path="/conversations/show/:id" element={<Conversation />} />
-          <Route path="/conversations/new/:tuneid" element={<ConversationEditor />} />
-          <Route path="/conversations/edit/:id" element={<ConversationEditor />} />
+      <div className="container">
+        <div style={ { marginBottom: '20px' } }></div>
+        <Router>
+          <Routes>
+            <Route path="/" element={<TuneList />} />
+            <Route path="/tunes/show/:id" element={<TuneShow />} />
+            
+            <Route path="/conversations/show/:id" element={<Conversation />} />
+            <Route path="/conversations/new/:tuneid" element={<ConversationEditor />} />
+            <Route path="/conversations/edit/:id" element={<ConversationEditor />} />
 
-          <Route path="/formats/new" element={<FormatEditor />} />
-          <Route path="/formats/edit/:id" element={<FormatEditor />} />
-        </Routes>
-      </Router>
+            <Route path="/formats/new" element={<FormatEditor />} />
+            <Route path="/formats/edit/:id" element={<FormatEditor />} />
+          </Routes>
+        </Router>
+      </div>
     </div>
   );
 };

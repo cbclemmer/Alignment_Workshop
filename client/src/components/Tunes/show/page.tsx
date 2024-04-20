@@ -17,7 +17,6 @@ export default () => {
   const [currentTune, setCurrentTune] = useState('')
   const conversations = useSelector((state: AppState) => state.conversationList.items)
   const loading = useSelector((state: AppState) => state.conversationList.loading)
-  const currentFormat = useSelector((state: AppState) => state.formatSelector.currentFormat)
 
   const dispatch = useDispatch()
   const collection = new Collection<Conversation, 'CONV_LIST'>('CONV_LIST', 'conversation', dispatch)

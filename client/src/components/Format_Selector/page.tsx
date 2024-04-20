@@ -93,7 +93,7 @@ export default ({ tuneId }: { tuneId: number }) => {
           </div>
         </div>
         {currentFormat != null && currentFormat.id != 0 && 
-          <div className='alert alert-info' role='alert'>
+          <div className='alert alert-info' role='alert' style={ { marginTop: '15px' } }>
             <h4>
               Current Format: <b>{currentFormat.name}</b>
             </h4>
