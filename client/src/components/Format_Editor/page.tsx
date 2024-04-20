@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch } from "react-redux"
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import { createFormat, editFormat, retrieveFormat } from './actions'
 import { Format } from "../../lib/types"
 import { Collection } from "../../lib/collection"
 
 export default () => {
   const { id } = useParams()
-  const numId = id === undefined ? NaN : parseInt(id)
-
+  
   const [loading, setLoading] = useState(false)
   const [nameInput, setNameInput] = useState('')
   const [systemMessageInput, setSystemMessageInput] = useState('')
@@ -48,6 +47,17 @@ export default () => {
 
   return (
     <div>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to={'/'}>Home</Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current='page'>
+            {id && <span>Edit Format</span>}
+            {!id && <span>New Format</span>}
+          </li>
+        </ol>
+      </nav>
       <b className={loading ? '' : 'hide'}>
         Loading Formats...
       </b>

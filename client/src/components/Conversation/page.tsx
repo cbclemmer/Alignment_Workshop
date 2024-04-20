@@ -63,9 +63,21 @@ export default () => {
 
   return (
     <div>
-      <Link to={`/tunes/show/${conversation?.tune_id}`}>Current Tune</Link>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to={'/'}>Home</Link>
+          </li>
+          <li className="breadcrumb-item">
+            <Link to={`/tunes/show/${conversation?.tune_id}`}>Tune</Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current='page'>
+            Edit Conversation
+          </li>
+        </ol>
+      </nav>
       <h2 className="text-center mb-4">Conversation: {conversation?.name}</h2>
-      <FormatSelector />
+      <FormatSelector tuneId={conversation?.tune_id || 0} />
       <div className={currentFormat == null ? 'hide' : ''}>
         <b>System Message:</b>
         <p dangerouslySetInnerHTML={{ __html: currentFormat?.formattedSystemMessage ?? '' }}>

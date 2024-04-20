@@ -74,6 +74,13 @@ export default () => {
 
   return (
     <div>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            Home
+          </li>
+        </ol>
+      </nav>
       {loading && <div>Loading...</div>}
       {!loading && <div>
         <div className={loading ? 'hide' : ''}>
