@@ -4,8 +4,10 @@ import qs from 'qs'
 const host = window.location.host.split(':')[0]
 
 export async function getApi(path: string, data: any = { }) {
-    const pwd = localStorage.getItem('align_pwd')
-    data['pwd'] = pwd
+    if (!data.pwd) {
+        const pwd = localStorage.getItem('align_pwd')
+        data['pwd'] = pwd
+    }
     return await axios.get(`http://${host}:4000/api/${path}?${qs.stringify(data)}`)
 }
 

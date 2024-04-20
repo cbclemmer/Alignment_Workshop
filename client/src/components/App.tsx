@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { checkPwd } from '../lib/api'
 
@@ -12,21 +12,19 @@ import TuneShow from './Tunes/show/page'
 import FormatEditor from './Format_Editor/page'
 
 const App: React.FC = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [validated, setValidated] = useState(false);
 
-  (async () => {
-    const pwd = localStorage.getItem('align_pwd')
-    if (!pwd) {
+  useEffect(() => {
+    (async () => {
+      const pwd = localStorage.getItem('align_pwd')
+      if (pwd && (await checkPwd(pwd))) {
+        setValidated(true)
+      }
       setLoading(false)
-      return
-    }
-    const acceptedPwd = await checkPwd(pwd)
-    if (acceptedPwd) {
-      setValidated(true)
-    }
-    setLoading(false)
-  })()
+    })()
+  }, [])
+
 
   return (
     <div>
