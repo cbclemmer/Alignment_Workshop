@@ -10,8 +10,9 @@ import {
   deleteFormat
 } from './actions'
 import { Format, AppState } from "../../lib/types"
+import { download } from '../../lib/api'
 
-export default () => {
+export default ({ tuneId }: { tuneId: number }) => {
   const [formatName, setFormatName] = useState('Select Format')
   const dispatch = useDispatch()
   const formats: Format[] = useSelector((state: AppState) => state.formatSelector.formats)
@@ -33,7 +34,20 @@ export default () => {
     dispatch(setFormat(format) as any)
   }
 
+  const downloadTune = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (currentFormat == null || currentFormat.id == 0) return
+    try {
+      await download('tunes/download', { tune_id: tuneId, format_id: currentFormat.id })
+    } catch (e) {
+      console.error('Tune Download Failed: ' + e)
+    }
+  }
+
   const deleteFormatUI = (e: React.FormEvent) => {
+    if (!confirm('Delete this format?')) {
+      return
+    }
     e.preventDefault()
     if (currentFormat == null) return
     dispatch(deleteFormat(currentFormat) as any)
@@ -77,17 +91,29 @@ export default () => {
               <Link to="/formats/new">Add Format</Link> 
             </div> 
           </div>
-          <div className='col-md'>
+        </div>
+        {currentFormat != null && currentFormat.id != 0 && 
+          <div className='alert alert-info' role='alert'>
+            <h4>
+              Current Format: <b>{currentFormat.name}</b>
+            </h4>
             <div className='form-floating'>
-              {currentFormat != null && <Link to={"/formats/edit/" + currentFormat.id}>Edit Format</Link>}
+              <Link to={"/formats/edit/" + currentFormat.id}>Edit Format</Link>
             </div> 
-          </div>
-          {currentFormat != null && <div className='col-md'>
             <a href='#' className='form-floating' onClick={deleteFormatUI}>
               Delete Format
-            </a> 
-          </div>}
-        </div>
+            </a>
+            <div>
+              <button 
+                style={ { marginTop: '20px' } }
+                className='btn btn-primary'
+                onClick={downloadTune}
+              >
+                Download tune data with this format
+              </button>
+            </div>
+          </div>
+        }
       </div>
     </div>
   )

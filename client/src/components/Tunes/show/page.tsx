@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
-import { download } from '../../../lib/api'
 
 import { find } from 'lodash'
 import $ from 'jquery'
@@ -46,30 +45,14 @@ export default () => {
     await collection.getList({ tune_id: numId })
   }
 
-  const downloadTune = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (currentFormat == null || currentFormat.id == 0) return
-    try {
-      await download('tunes/download', { tune_id: id, format_id: currentFormat.id })
-    } catch (e) {
-      console.error('Tune Download Failed: ' + e)
-    }
-  }
+  
 
   return (
     <div>
       {(loading) && <div>Loading...</div>}
       {!loading && <div>
       <h2>Tune: {currentTune}</h2>
-      <FormatSelector />
-      {currentFormat != null && currentFormat.id != 0 &&
-      <button 
-        style={ { marginTop: '20px' } }
-        className='btn btn-primary'
-        onClick={downloadTune}
-      >
-        Download
-      </button>}
+      <FormatSelector tuneId={numId}/>
       <div style={ { marginTop: '15px' } }>
         <h2>Conversations</h2>
         <Link to={`/conversations/new/${id}`}>New Conversation</Link>
