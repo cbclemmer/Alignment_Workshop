@@ -12,7 +12,7 @@ import {
 import { Format, AppState } from "../../lib/types"
 import { download } from '../../lib/api'
 
-export default ({ tuneId }: { tuneId: number }) => {
+export default ({ tuneId, showDownload }: { tuneId: number, showDownload: boolean }) => {
   const [formatName, setFormatName] = useState('Select Format')
   const dispatch = useDispatch()
   const formats: Format[] = useSelector((state: AppState) => state.formatSelector.formats)
@@ -103,6 +103,7 @@ export default ({ tuneId }: { tuneId: number }) => {
             <a href='#' className='form-floating' onClick={deleteFormatUI}>
               Delete Format
             </a>
+            {showDownload && 
             <div>
               <button 
                 style={ { marginTop: '20px' } }
@@ -111,7 +112,7 @@ export default ({ tuneId }: { tuneId: number }) => {
               >
                 Download tune data with this format
               </button>
-            </div>
+            </div>}
           </div>
         }
       </div>

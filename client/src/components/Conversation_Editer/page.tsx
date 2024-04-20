@@ -89,9 +89,11 @@ export default () => {
           {!id && <li className="breadcrumb-item active" aria-current="page">
             New Conversation
           </li>}
+          {id && <li className="breadcrumb-item active" aria-current="page">
+            Edit Conversation Metadata
+          </li>}
         </ol>
       </nav>
-      {id && <Link to={`/conversations/show/${id}`}>Conversation</Link>}
       <div className={loading ? 'hide' : ''}>
         <form onSubmit={handleSubmit}>
           <h2 className="text-center mb-4">Conversation</h2>

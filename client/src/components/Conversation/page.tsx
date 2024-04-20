@@ -77,11 +77,12 @@ export default () => {
         </ol>
       </nav>
       <h2 className="text-center mb-4">Conversation: {conversation?.name}</h2>
-      <FormatSelector tuneId={conversation?.tune_id || 0} />
-      <div className={currentFormat == null ? 'hide' : ''}>
+      <FormatSelector tuneId={conversation?.tune_id || 0} showDownload={false}/>
+      <div className={currentFormat != null && currentFormat.id ? '' : 'hide'}>
         <b>System Message:</b>
-        <p dangerouslySetInnerHTML={{ __html: currentFormat?.formattedSystemMessage ?? '' }}>
-        </p>
+        <div className='alert alert-light' role='alert' style={ { marginTop: '15px' } }>
+          <p dangerouslySetInnerHTML={{ __html: currentFormat?.formattedSystemMessage ?? '' }}></p>
+        </div>
       </div>
       <div className="mb-3">
         {messages.map((message: Message, index: number) => (

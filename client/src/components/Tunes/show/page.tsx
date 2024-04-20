@@ -34,6 +34,9 @@ export default () => {
 
   const deleteConvUI = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!confirm('Delete this conversation?')) {
+      return
+    }
     const id = $(e.target).data('id')
     const conv = find(conversations, (t: Conversation) => t.id.toString() == id)
     if (!conv) {
@@ -61,26 +64,31 @@ export default () => {
       {(loading) && <div>Loading...</div>}
       {!loading && <div>
       <h2>Tune: {currentTune}</h2>
-      <FormatSelector tuneId={numId}/>
+      <FormatSelector tuneId={numId} showDownload={true}/>
       <div style={ { marginTop: '15px' } }>
         <h2>Conversations</h2>
-        <Link to={`/conversations/new/${id}`}>New Conversation</Link>
-        {conversations.map((tune: Tune, index: number) => (
-          <div key={index}>
-            <Link to={`/conversations/show/${tune.id}`}>{tune.name}</Link>
-            <button 
-              type='button'
-              data-id={tune.id}
-              className='btn btn-outline-danger' 
-              style={ { marginLeft: '20px' }}
-              onClick={deleteConvUI}
-            >
-              X
-            </button>
+        <Link to={`/conversations/new/${id}`} className='btn btn-primary'>New Conversation</Link>
+        <ul className='list-group' style={ { marginTop: '15px' } }>
 
-            <Link to={`/conversations/edit/${tune.id}`}>Edit</Link>
-          </div>
-        ))}
+          {conversations.map((tune: Tune, index: number) => (
+            <li key={index} className='list-group-item'>
+              <h4>
+              <Link to={`/conversations/show/${tune.id}`}>{tune.name}</Link>
+              </h4>
+              <div>       
+                <button 
+                  type='button'
+                  data-id={tune.id}
+                  className='btn btn-outline-danger'
+                  onClick={deleteConvUI}
+                >
+                  X
+                </button>
+                <Link style={ { marginLeft: '15px' } } className='btn btn-outline-warning' to={`/conversations/edit/${tune.id}`}>Edit</Link>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
       </div>}
     </div>
