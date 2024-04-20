@@ -3,6 +3,7 @@ import _ from "lodash"
 import { spawn } from "child_process"
 
 import { IMessage, Completion, IFormat } from "./types.js"
+import { Database } from 'sqlite3'
 
 export function callPythonScript(inputString: string): Promise<string> {
   return new Promise<string>((res, rej) => {

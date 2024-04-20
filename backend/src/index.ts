@@ -61,10 +61,16 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
+const formatDeleteCheck = async (id: number) => {
+  const rows = await DataModel.dbList(db, 'SELECT id FROM tunes WHERE format_id = ?', [id.toString()])
+  return rows.length == 0
+} 
+
 const formatModel = new DataModel<IFormat>('formats', db, FormatKeys)
 new DataModelApi({
   urlName: 'format',
-  model: formatModel
+  model: formatModel,
+  deleteCb: formatDeleteCheck
 }, app, db)
 
 new DataModelApi({
@@ -88,6 +94,16 @@ new DataModelApi({
   urlName: 'tag',
   model: new DataModel<ITag>('tags', db, TagKeys)
 }, app, db)
+
+app.get('/api/format/delete-check', async (req: any, res: any) => {
+  const id = req.query.id
+  if (!id) {
+    res.json({ error: 'Could not find id param' })
+    return
+  }
+  res.json({ error: false, passed: await formatDeleteCheck(id) })
+  return
+})
 
 app.get('/api/pwd-check', async (req: any, res: any) => {
     const config = getConfig()

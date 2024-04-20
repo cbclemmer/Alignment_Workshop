@@ -7,10 +7,10 @@ import $ from 'jquery'
 import { 
   getFormats,
   setFormat,
-  deleteFormat
+  deleteFormat,
+  canDeleteFormat
 } from './actions'
 import { Format, AppState } from "../../lib/types"
-import { download } from '../../lib/api'
 
 export default () => {
   const [formatName, setFormatName] = useState('Select Format')
@@ -40,9 +40,14 @@ export default () => {
     }
     e.preventDefault()
     if (currentFormat == null) return
-    dispatch(deleteFormat(currentFormat) as any)
-    setFormatName('Select Format')
-    dispatch(setFormat(null) as any)
+    (async () => {
+      if (!(await canDeleteFormat(currentFormat.id))) {
+        return
+      }
+      dispatch(deleteFormat(currentFormat) as any)
+      setFormatName('Select Format')
+      dispatch(setFormat(null) as any)
+    })()
   }
 
   return (

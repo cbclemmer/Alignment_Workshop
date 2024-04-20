@@ -169,7 +169,7 @@ export default () => {
                   style={ { marginLeft: '20px' }}
                   onClick={initEdit}
                 >
-                  Edit Name
+                  Edit Metadata
                 </button>
               </div>
             </li>

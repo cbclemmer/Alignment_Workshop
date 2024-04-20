@@ -7,7 +7,8 @@ import { getConfig } from "../util.js"
 
 export type ApiParams<I extends BaseModel> = {
   urlName: string
-  model: DataModel<I>  
+  model: DataModel<I>
+  deleteCb?: (id: number) => Promise<boolean>
 }
 
 function checkPwd(pwd: string, res: any) {
@@ -96,6 +97,10 @@ export class DataModelApi<I extends BaseModel> {
         const err = 'Error: No id supplied for editing model'
         console.error(err)
         res.json({ error: err })
+        return
+      }
+      if (!!params.deleteCb && !(await params.deleteCb(data.id))) {
+        res.json({ "Error": "Deletion checks failed" })
         return
       }
       data.id = parseInt(data.id.toString())

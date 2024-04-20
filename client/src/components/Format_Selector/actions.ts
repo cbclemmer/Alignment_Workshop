@@ -33,16 +33,30 @@ export const setFormat = (model: Format | null) => (dispatch: any, getState: any
   runAction(dispatch, SET_FORMAT, model)
 }
 
+export const canDeleteFormat = async (id: number): Promise<boolean> => {
+  const { data } = await getApi('format/delete-check', { id: id })
+  if (data.error) {
+    alert(data.error)
+    return false
+  }
+  if (!data.passed) {
+    alert('There is a format associated with a tune, cannot delete format')
+    return false
+  }
+  return true
+}
+
 export const deleteFormat = (model: Format) => async (dispatch: any, getState: any) => {
   runAction(dispatch, LOADING, true)
   try {
     const res = await postApi('format/delete', model)
     if (!!res.data.error) {
       console.error(res.data.errror)
-      return
+      return false
     }
     getFormats(dispatch, getState)
   } finally {
     runAction(dispatch, LOADING, false)
+    return true
   }
 }
