@@ -3,13 +3,15 @@ import qs from 'qs'
 
 const host = window.location.host.split(':')[0]
 
-export async function getApi(path: string, data: any = null) {
-    return data == null 
-        ? await axios.get(`http://${host}:4000/api/${path}`)
-        : await axios.get(`http://${host}:4000/api/${path}?${qs.stringify(data)}`)
+export async function getApi(path: string, data: any = { }) {
+    const pwd = localStorage.getItem('align_pwd')
+    data['pwd'] = pwd
+    return await axios.get(`http://${host}:4000/api/${path}?${qs.stringify(data)}`)
 }
 
 export async function postApi(path: string, data: any = { }) {
+    const pwd = localStorage.getItem('align_pwd')
+    data['pwd'] = pwd
     return await axios.post(`http://${host}:4000/api/${path}`, data)
 }
 
@@ -36,4 +38,9 @@ export async function download(url: string, data: any = { }) {
         }
         res()
     })
+}
+
+export async function checkPwd(pwd: string): Promise<boolean> {
+    const res = await getApi('pwd-check', { pwd })
+    return !res.data.error
 }

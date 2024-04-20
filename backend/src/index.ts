@@ -8,7 +8,7 @@ import _ from "lodash"
 
 import { DataModel } from "./lib/DataModel.js"
 import { DataModelApi } from "./lib/api.js"
-import { callPythonScript, createTuneFile } from "./util.js"
+import { callPythonScript, createTuneFile, getConfig } from "./util.js"
 import { ConversationKeys, IConversation, IMessage, IFormat, ITag, ITune, MessageKeys, FormatKeys, TagKeys, TuneKeys } from "./types.js"
 
 const db: Database = new sqlite.Database('data.db')
@@ -88,6 +88,17 @@ new DataModelApi({
   urlName: 'tag',
   model: new DataModel<ITag>('tags', db, TagKeys)
 }, app, db)
+
+app.get('/api/pwd-check', async (req: any, res: any) => {
+    const config = getConfig()
+    const pwd = req.query.pwd
+    if (config.pwd != pwd) {
+      res.json({ error: 'Incorrect password'})
+      return
+    }
+    res.json({ error: false })
+    return
+})
 
 app.post('/api/generate', async (req: any, res: any) => {
   try {

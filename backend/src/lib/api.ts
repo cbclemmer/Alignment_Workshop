@@ -3,13 +3,7 @@ import { Database } from "sqlite3"
 
 import { DataModel } from './DataModel.js'
 import { BaseModel } from "../types.js"
-
-import fs from 'fs'
-
-var config = JSON.parse(fs.readFileSync('config.json', 'utf8'))
-if (config.pwd === undefined) {
-  throw new Error('Could not find pwd in config file')
-}
+import { getConfig } from "../util.js"
 
 export type ApiParams<I extends BaseModel> = {
   urlName: string
@@ -17,6 +11,7 @@ export type ApiParams<I extends BaseModel> = {
 }
 
 function checkPwd(pwd: string, res: any) {
+  const config = getConfig()
   if (config.pwd !== pwd) {
     res.json({ error: 'Password does not match'})
     return false
@@ -36,7 +31,7 @@ export class DataModelApi<I extends BaseModel> {
         res.json({ error: 'No model id supplied'})
         return
       }
-      if (!checkPwd(req.params.pwd, res)) {
+      if (!checkPwd(req.query.pwd, res)) {
         return
       }
       const model = await params.model.get(id)
@@ -49,9 +44,10 @@ export class DataModelApi<I extends BaseModel> {
 
     // /api/foo/list
     app.get(makeStaticUrl('list'), async (req: any, res: any) => {
-      if (!checkPwd(req.params.pwd, res)) {
+      if (!checkPwd(req.query.pwd, res)) {
         return
       }
+      delete req.query.pwd
       const models = await params.model.list(req.query)
       if (models == null) {
         res.json([])
@@ -62,9 +58,10 @@ export class DataModelApi<I extends BaseModel> {
 
     // /api/foo/create
     app.post(makeStaticUrl('create'), async (req: any, res: any) => {
-      if (!checkPwd(req.params.pwd, res)) {
+      if (!checkPwd(req.body.pwd, res)) {
         return
       }
+      delete req.body.pwd
       const data: I = req.body
       data.id = parseInt(data.id.toString())
       const model = await params.model.create(data)
@@ -93,6 +90,7 @@ export class DataModelApi<I extends BaseModel> {
       if (!checkPwd(req.body.pwd, res)) {
         return
       }
+      delete req.body.pwd
       const data: I = req.body
       if (!data.id) {
         const err = 'Error: No id supplied for editing model'
