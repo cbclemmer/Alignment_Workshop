@@ -88,9 +88,8 @@ export default () => {
         {messages.map((message: Message, index: number) => (
           <div key={index}>
             <b>{message.isUser ? currentFormat?.userNotation : currentFormat?.assistantNotation}</b><br></br>
-            <input
+            <textarea
               style={ { width: '100%' } }
-              type="text"
               defaultValue={message.text_data}
               data-index={index}
               className={`alert alert-${message.isUser ? 'primary' : 'secondary'}`}
@@ -105,7 +104,7 @@ export default () => {
       {!loading && 
       <div>
         <form onSubmit={handleSubmit} className={currentFormat == null ? 'hide' : ''}>
-          <div className="input-group mb-3">
+          {/* <div className="input-group mb-3">
             <input
               type="text"
               className="form-control"
@@ -116,7 +115,7 @@ export default () => {
             <button className="btn btn-primary" type="submit">
               Send
             </button>
-          </div>
+          </div> */}
         </form>
         <div className='btn-toolbar'>
           <div className='btn-group mr-2'>
