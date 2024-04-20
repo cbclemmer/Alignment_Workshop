@@ -63,7 +63,7 @@ export const postMessage = async (
     const prompt = format.systemMessage + '\n' + messagesForPrompt.join('\n') + '\n' + format.assistantNotation
     
     const host = window.location.host.split(':')[0]
-    const response = await axios.post(host + ':4000/api/generate', { prompt })
+    const response = await axios.post('http://' + host + ':4000/api/generate', { prompt })
     if (response.status != 200) {
       console.error('Error sending message: ' + response.data)
       return
