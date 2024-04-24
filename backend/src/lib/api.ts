@@ -35,6 +35,7 @@ export class DataModelApi<I extends BaseModel> {
       if (!checkPwd(req.query.pwd, res)) {
         return
       }
+      delete req.query.pwd
       const model = await params.model.get(id)
       if (model == null) {
         res.json({ error: `Model id: ${id} not found`})
@@ -74,6 +75,7 @@ export class DataModelApi<I extends BaseModel> {
       if (!checkPwd(req.body.pwd, res)) {
         return
       }
+      delete req.body.pwd
       const data: I = req.body
       if (!data.id) {
         const err = 'Error: No id supplied for editing model'
